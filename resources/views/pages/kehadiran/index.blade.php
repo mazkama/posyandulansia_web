@@ -64,12 +64,38 @@
                 </div>
             </div>
         </div>
+        
         <div class="card mt-4">
             <div class="card-body">
                 <h4 class="mb-3 mb-md-2">Data Lansia</h4>
-                <p class="text-muted mb-3">Read the <a href="https://datatables.net/" target="_blank">
-                        Official DataTables Documentation </a> for a full list of instructions and other
-                    options.</p>
+                <p class="text-muted mb-3">
+                    Read the 
+                    <a href="https://datatables.net/" target="_blank">Official DataTables Documentation</a>
+                    for a full list of instructions and other options.
+                </p>
+        
+                <div class="d-flex justify-content-end gap-2 mb-4">
+                    <form 
+                        action="{{ route('kehadiran.cetakLaporanPdf') }}" 
+                        method="POST" 
+                        onsubmit="return confirm('Yakin ingin mencetak laporan dan mengubah status menjadi selesai?')"
+                    >
+                        @csrf
+                        <input type="hidden" name="jadwal_id" value="{{ $jadwalId }}">
+                        <button type="submit" class="btn btn-danger">Cetak PDF</button>
+                    </form>
+        
+                    <form 
+                        action="{{ route('kehadiran.cetakLaporanExcel') }}" 
+                        method="POST" 
+                        onsubmit="return confirm('Yakin ingin mencetak laporan dan mengubah status menjadi selesai?')"
+                    >
+                        @csrf
+                        <input type="hidden" name="jadwal_id" value="{{ $jadwalId }}">
+                        <button type="submit" class="btn btn-success">Cetak Excel</button>
+                    </form>
+                </div>
+        
                 <div class="table-responsive">
                     <table class="table" id="kehadiranTable">
                         <thead>
@@ -90,7 +116,9 @@
                                     <td>{{ $lansia->ttl }}</td>
                                     <td>
                                         @if (in_array($lansia->id, $kehadiran))
-                                            <button class="btn btn-secondary" disabled>Hadir</button>
+                                            <button class="btn btn-success" disabled>Hadir</button>
+                                        @elseif ($jadwalStatus)
+                                            <button class="btn btn-secondary" disabled>Jadwal Selesai</button>
                                         @else
                                             <form action="{{ route('kehadiran.store') }}" method="POST">
                                                 @csrf
@@ -110,6 +138,7 @@
                 </div>
             </div>
         </div>
+        
 
     </div>
     <script>

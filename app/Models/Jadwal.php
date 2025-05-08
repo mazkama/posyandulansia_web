@@ -9,7 +9,7 @@ class Jadwal extends Model
 {
     use HasFactory;
     protected $table = 'jadwal'; // Menentukan nama tabel yang benar
-    protected $fillable = ['tanggal', 'waktu', 'lokasi', 'keterangan'];
+    protected $fillable = ['tanggal', 'waktu', 'lokasi', 'status'];
 
     public function kehadiran()
     {

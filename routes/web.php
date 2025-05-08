@@ -41,6 +41,8 @@ Route::resource('/jadwal', JadwalController::class)->names('jadwal');
 //     'index', 'create', 'store', 'edit', 'update', 'destroy'
 // ]);
 
+Route::post('/kehadiran/cetak-laporan-pdf', [KehadiranController::class, 'cetakLaporanPdf'])->name('kehadiran.cetakLaporanPdf');
+Route::post('/kehadiran/cetak-laporan-excel', [KehadiranController::class, 'cetakLaporanExcel'])->name('kehadiran.cetakLaporanExcel');
 
 
 Route::get('/kehadiran', [KehadiranController::class, 'index'])->name('kehadiran');

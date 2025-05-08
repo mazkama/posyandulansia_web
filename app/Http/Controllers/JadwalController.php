@@ -14,11 +14,31 @@ class JadwalController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
-    {
-        $jadwals = Jadwal::orderBy('tanggal', 'desc')->get();
-        return view('pages.jadwal.index', compact('jadwals'));
-    }
+     public function index()
+     {
+         $jadwals = Jadwal::orderBy('tanggal', 'desc')->get();
+         $now = Carbon::now();
+     
+         foreach ($jadwals as $jadwal) {
+             if ($jadwal->status !== 'selesai') {
+                 if ($now->lt(Carbon::parse($jadwal->tanggal))) {
+                     $jadwal->status = 'belum_dimulai';
+                 } elseif ($now->isSameDay(Carbon::parse($jadwal->tanggal))) {
+                     $jadwal->status = 'berlangsung';
+                 } else {
+                     $jadwal->status = 'selesai';
+                 }
+     
+                 // Simpan jika status berubah
+                 if ($jadwal->isDirty('status')) {
+                     $jadwal->save();
+                 }
+             }
+         }
+     
+         return view('pages.jadwal.index', compact('jadwals'));
+     }
+     
 
     /**
      * Show the form for creating a new resource.
@@ -37,7 +57,6 @@ class JadwalController extends Controller
             'tanggal'    => 'required|date',
             'waktu'      => 'required|date_format:H:i',
             'lokasi'     => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
         ], [
             'tanggal.required'   => 'Tanggal wajib diisi.',
             'tanggal.date'       => 'Format tanggal tidak valid.',
@@ -46,28 +65,48 @@ class JadwalController extends Controller
             'lokasi.required'    => 'Lokasi wajib diisi.',
             'lokasi.max'         => 'Lokasi maksimal 255 karakter.',
         ]);
-
+        
         // Konversi tanggal ke format hari
         $hari = Carbon::parse($validated['tanggal'])->translatedFormat('l');
         $tanggal = Carbon::parse($validated['tanggal'])->translatedFormat('j F Y');
-
-        // Format pesan notifikasi dengan hari
+    
+        // Tentukan status secara otomatis**
+        $now = Carbon::now();
+        $tanggalMulai = Carbon::parse($validated['tanggal']);
+    
+        if ($now->lt($tanggalMulai)) {
+            $status = 'belum_dimulai';
+        } elseif ($now->isSameDay($tanggalMulai)) {
+            $status = 'berlangsung';
+        } else {
+            $status = 'selesai';
+        }
+    
+        // Format pesan notifikasi
         $pesan = "Posyandu lansia selanjutnya akan dilaksanakan {$hari}, {$tanggal} pukul {$validated['waktu']} di {$validated['lokasi']}. Kami mengharapkan kehadiran saudara/saudari.";
-
-        // Simpan jadwal
-        Jadwal::create($validated);
-
-        // Kirim notifikasi dengan pesan yang sudah diformat
+    
+        $lastJadwal = Jadwal::orderBy('tanggal', 'desc')->first();
+        if ($lastJadwal && $lastJadwal->status !== 'selesai') {
+            return redirect()->route('jadwal.index')->with('error', 'Jadwal sebelumnya belum selesai, tidak bisa membuat jadwal baru.');
+        }
+        // Simpan jadwal dengan status otomatis
+        $jadwal = Jadwal::create([
+            'tanggal' => $validated['tanggal'],
+            'waktu'   => $validated['waktu'],
+            'lokasi'  => $validated['lokasi'],
+            'status'  => $status, 
+        ]);
+    
+        // Kirim notifikasi dengan pesan 
         app()->call('App\Http\Controllers\NotifikasiController@store', [
             'request' => new Request([
                 'pesan' => $pesan
             ])
         ]);
-
-
+    
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dibuat.');
     }
-
+    
 
 
     /**
@@ -100,21 +139,43 @@ class JadwalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-
         $validated = $request->validate([
             'tanggal'    => 'required|date',
-            'waktu'      => 'required|date_format:H:i:s',
+            'waktu'      => 'required|date_format:H:i',
             'lokasi'     => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
+        ], [
+            'tanggal.required'   => 'Tanggal wajib diisi.',
+            'tanggal.date'       => 'Format tanggal tidak valid.',
+            'waktu.required'     => 'Waktu wajib diisi.',
+            'waktu.date_format'  => 'Format waktu tidak valid, gunakan format HH:MM.',
+            'lokasi.required'    => 'Lokasi wajib diisi.',
+            'lokasi.max'         => 'Lokasi maksimal 255 karakter.',
         ]);
-
+    
+        // Ambil data jadwal lama
         $jadwal = Jadwal::findOrFail($id);
+    
+        // Update data dengan input baru
         $jadwal->update($validated);
-
+    
+        // Tentukan status secara otomatis
+        $now = Carbon::now();
+        $tanggalMulai = Carbon::parse($validated['tanggal']);
+    
+        if ($now->lt($tanggalMulai)) {
+            $jadwal->status = 'belum_dimulai';
+        } elseif ($now->isSameDay($tanggalMulai)) {
+            $jadwal->status = 'berlangsung';
+        } else {
+            $jadwal->status = 'selesai';
+        }
+    
+        $jadwal->save();
+    
+        // Redirect dengan pesan sukses**
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
@@ -153,4 +214,6 @@ class JadwalController extends Controller
             return response()->json(['success' => false, 'message' => 'Gagal menghapus dari Firebase: ' . $e->getMessage()]);
         }
     }
+
+    
 }

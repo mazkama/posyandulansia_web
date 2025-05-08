@@ -22,11 +22,6 @@
                         <input type="text" class="form-control" id="create_lokasi" name="lokasi"
                             placeholder="Masukkan lokasi" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="create_keterangan" class="form-label">Keterangan</label>
-                        <textarea class="form-control" id="create_keterangan" name="keterangan" rows="3"
-                            placeholder="Masukkan keterangan"></textarea>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -62,10 +57,6 @@
                         <input type="text" class="form-control" id="edit_lokasi" name="lokasi"
                             placeholder="Masukkan lokasi" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit_keterangan" class="form-label">Keterangan</label>
-                        <textarea class="form-control" id="edit_keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan"></textarea>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -82,4 +73,5 @@
         document.getElementById("create_tanggal").setAttribute("min", today);
         document.getElementById("edit_tanggal").setAttribute("min", today);
     });
+
 </script>
