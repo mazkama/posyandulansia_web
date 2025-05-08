@@ -49,6 +49,13 @@
                 <div data-i18n="Riwayat Kesehatan">Riwayat Kesehatan</div>
             </a>
         </li>
+        <li class="menu-item {{ Request::is('berita*') ? 'active' : '' }}">
+            <a href="{{ route('berita.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-news"></i>
+                <div data-i18n="Berita">Berita</div>
+            </a>
+        </li>
+        
 
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Data Pengguna">Data &amp; Pengguna</span>

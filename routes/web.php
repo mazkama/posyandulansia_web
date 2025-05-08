@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CekKesehatanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JadwalController;
@@ -41,6 +42,7 @@ Route::resource('/jadwal', JadwalController::class)->names('jadwal');
 //     'index', 'create', 'store', 'edit', 'update', 'destroy'
 // ]);
 
+
 Route::post('/kehadiran/cetak-laporan-pdf', [KehadiranController::class, 'cetakLaporanPdf'])->name('kehadiran.cetakLaporanPdf');
 Route::post('/kehadiran/cetak-laporan-excel', [KehadiranController::class, 'cetakLaporanExcel'])->name('kehadiran.cetakLaporanExcel');
 
@@ -58,3 +60,6 @@ Route::post('/kesehatan-cek/store',[CekKesehatanController::class, 'store'])->na
 Route::get('/riwayat-kesehatan', [RiwayatKesehatanController::class, 'index'])->name('riwayatKesehatan.index');
 Route::get('/riwayat-kesehatan/list', [RiwayatKesehatanController::class, 'list'])->name('riwayatKesehatan.list');
 Route::get('/riwayat-kesehatan/show/{id}', [RiwayatKesehatanController::class, 'show'])->name('riwayatKesehatan.show');
+
+Route::resource('berita', BeritaController::class);
+Route::delete('berita/{berita}', [BeritaController::class, 'destroy'])->name('berita.destroy');
