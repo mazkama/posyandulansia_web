@@ -25,6 +25,7 @@
                         <tr>
                             <th>No</th>
                             <th>Judul</th>
+                            <th>Konten</th> <!-- Menambahkan kolom Konten -->
                             <th>Tanggal Publish</th>
                             <th>Foto</th>
                             <th>Aksi</th>
@@ -35,6 +36,7 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $berita->judul }}</td>
+                            <td>{{ Str::limit($berita->konten, 100) }}</td> <!-- Menampilkan Konten -->
                             <td>{{ \Carbon\Carbon::parse($berita->tanggal_publish)->translatedFormat('d F Y') }}</td>
                             <td>
                                 @if ($berita->foto)

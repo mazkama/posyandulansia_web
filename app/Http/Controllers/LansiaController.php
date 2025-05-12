@@ -123,23 +123,90 @@ class LansiaController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $lansia = Lansia::findOrFail($id);
+
+        return view('pages.lansia.show', compact('lansia'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        //
+        $lansia = Lansia::findOrFail($id);
+        $user = User::findOrFail($lansia->user_id); 
+        
+        return view('pages.lansia.edit', compact('lansia', 'user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+   public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'username'     => 'required|unique:users,username,' . $id, 
+            'password'     => 'nullable|string|min:6', 
+            'nama'         => 'required|string|max:255',
+            'nik'          => 'required|digits:16|unique:lansia,nik,' . $id, 
+            'ttl'          => 'required|string|max:255',
+            'umur'         => 'required|integer|min:1|max:150',
+            'alamat'       => 'required|string',
+            'no_hp'        => 'required|string',
+        ], [
+            'username.required'    => 'Username wajib diisi.',
+            'username.unique'      => 'Username sudah digunakan, silakan pilih yang lain.',
+            'password.min'         => 'Password minimal harus 6 karakter.',
+            'nama.required'        => 'Nama wajib diisi.',
+            'nik.required'         => 'NIK wajib diisi.',
+            'nik.digits'           => 'NIK harus terdiri dari 16 angka.',
+            'nik.unique'           => 'NIK sudah terdaftar.',
+            'ttl.required'         => 'Tempat, Tanggal Lahir wajib diisi.',
+            'umur.required'        => 'Umur wajib diisi.',
+            'umur.integer'         => 'Umur harus berupa angka.',
+            'umur.min'             => 'Umur minimal adalah 1 tahun.',
+            'umur.max'             => 'Umur maksimal adalah 150 tahun.',
+            'alamat.required'      => 'Alamat wajib diisi.',
+            'no_hp.required'       => 'Nomor HP wajib diisi.',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $user = User::findOrFail($id);
+            $user->username = $validated['username'];
+
+            if ($validated['password']) {
+                $user->password = Hash::make($validated['password']);
+            }
+
+            $user->save();
+
+            $lansia = Lansia::findOrFail($id);
+            $lansia->nama = $validated['nama'];
+            $lansia->nik = $validated['nik'];
+            $lansia->ttl = $validated['ttl'];
+            $lansia->umur = $validated['umur'];
+            $lansia->alamat = $validated['alamat'];
+            $lansia->no_hp = $validated['no_hp'];
+            $lansia->save();
+
+            DB::commit();
+
+            if ($validated['username'] != $user->username || (isset($validated['password']) && $validated['password'])) {
+                $this->firebaseAuth->updateUser($user->firebase_uid, [
+                    'email' => 'qilaynin+' . $validated['username'] . '@gmail.com',
+                    'password' => $validated['password'] ?? $user->password,
+                    'displayName' => $validated['nama'],
+                    'disabled' => false,
+                ]);
+            }
+
+            return redirect()->route('lansia.index')->with('success', 'Data lansia berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors('Terjadi kesalahan saat memperbarui data: ' . $e->getMessage());
+        }
     }
 
     /**

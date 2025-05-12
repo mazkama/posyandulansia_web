@@ -28,14 +28,14 @@ class BeritaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
+        public function store(Request $request)
+        {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'konten' => 'required',
-            'tanggal_publish' => 'required|date',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+        'judul' => 'required|string|max:255',
+        'konten' => 'required',
+        'tanggal_publish' => 'required|date',
+        'foto.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // validasi tiap foto
+    ]);
     
         if ($request->hasFile('foto')) {
             $validated['foto'] = $request->file('foto')->store('berita', 'public');

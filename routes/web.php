@@ -5,6 +5,7 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\CekKesehatanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\KaderController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\LansiaController;
 use App\Http\Controllers\RiwayatKesehatanController;
@@ -38,6 +39,8 @@ Route::post('/login', [AuthController::class, 'Login'])->name('Login');
 
 Route::resource('/lansia', LansiaController::class)->names('lansia');
 Route::resource('/jadwal', JadwalController::class)->names('jadwal');
+Route::resource('/kader', KaderController::class)->names('kader');
+
 // Route::resource('jadwal', JadwalController::class)->only([
 //     'index', 'create', 'store', 'edit', 'update', 'destroy'
 // ]);

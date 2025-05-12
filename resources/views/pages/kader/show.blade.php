@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard | Detail Lansia')
+@section('title', 'Dashboard | Detail Kader')
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
@@ -11,16 +11,16 @@
                     <div class="bg-primary text-white p-4 rounded-top d-flex align-items-center">
                         <div class="avatar avatar-lg me-3">
                             <span class="avatar-initial rounded-circle bg-white text-primary">
-                                {{ strtoupper(substr($lansia->nama, 0, 1)) }}
+                                {{ strtoupper(substr($kader->nama, 0, 1)) }}
                             </span>
                         </div>
                         <div>
-                            <h4 class="mb-0">{{ $lansia->nama }}</h4>
-                            <p class="mb-0 opacity-75">{{ $lansia->umur }} Tahun</p>
+                            <h4 class="mb-0">{{ $kader->nama }}</h4>
+                            <p class="mb-0 opacity-75">{{ $kader->umur }} Tahun</p>
                         </div>
                     </div>
 
-                    <!-- Detail Informasi -->
+                    <!-- Detail Informasi Kader -->
                     <div class="p-4">
                         <div class="row g-4">
                             <div class="col-md-6">
@@ -28,28 +28,28 @@
                                     <p class="small text-muted mb-1">
                                         <i class="ti ti-id me-1"></i>NIK
                                     </p>
-                                    <p class="fs-5 mb-0">{{ $lansia->nik }}</p>
+                                    <p class="fs-5 mb-0">{{ $kader->nik }}</p>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <p class="small text-muted mb-1">
                                         <i class="ti ti-calendar me-1"></i>Tempat, Tanggal Lahir
                                     </p>
-                                    <p class="fs-5 mb-0">{{ $lansia->ttl }}</p>
+                                    <p class="fs-5 mb-0">{{ $kader->ttl }}</p>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <p class="small text-muted mb-1">
                                         <i class="ti ti-user me-1"></i>Username
                                     </p>
-                                    <p class="fs-5 mb-0">{{$lansia->user->username?? 'Tidak ada' }}</p>
+                                    <p class="fs-5 mb-0">{{$kader->user->username ?? 'Tidak ada' }}</p>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <p class="small text-muted mb-1">
                                         <i class="ti ti-fingerprint me-1"></i>User ID
                                     </p>
-                                    <p class="fs-5 mb-0">{{ $lansia->user_id ?? 'Tidak ada' }}</p>
+                                    <p class="fs-5 mb-0">{{ $kader->user_id ?? 'Tidak ada' }}</p>
                                 </div>
                             </div>
                             
@@ -59,9 +59,9 @@
                                         <i class="ti ti-phone me-1"></i>Nomor HP
                                     </p>
                                     <p class="fs-5 mb-0">
-                                        @if($lansia->no_hp)
-                                            <a href="tel:{{ $lansia->no_hp }}" class="text-primary text-decoration-none">
-                                                {{ $lansia->no_hp }}
+                                        @if($kader->no_hp)
+                                            <a href="tel:{{ $kader->no_hp }}" class="text-primary text-decoration-none">
+                                                {{ $kader->no_hp }}
                                             </a>
                                         @else
                                             <span class="text-muted">Tidak ada</span>
@@ -73,25 +73,26 @@
                                     <p class="small text-muted mb-1">
                                         <i class="ti ti-map-pin me-1"></i>Alamat
                                     </p>
-                                    <p class="fs-5 mb-0">{{ $lansia->alamat }}</p>
+                                    <p class="fs-5 mb-0">{{ $kader->alamat }}</p>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <p class="small text-muted mb-1">
                                         <i class="ti ti-clock me-1"></i>Umur
                                     </p>
-                                    <p class="fs-5 mb-0">{{ $lansia->umur }} Tahun</p>
+                                    <p class="fs-5 mb-0">{{ $kader->umur }} Tahun</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                     <hr class="m-0">
+
+                    <hr class="m-0">
                     <div class="p-4 d-flex justify-content-between align-items-center">
-                        <a href="{{ route('lansia.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('kader.index') }}" class="btn btn-outline-secondary">
                             <i class="ti ti-arrow-left me-1"></i>Kembali
                         </a>
                         <div>
-                            <a href="{{ route('lansia.edit', $lansia->id) }}" class="btn btn-warning me-2">
+                            <a href="{{ route('kader.edit', $kader->id) }}" class="btn btn-warning me-2">
                                 <i class="ti ti-pencil me-1"></i>Edit
                             </a>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
@@ -119,11 +120,11 @@
                     </span>
                 </div>
                 <h5>Hapus Data</h5>
-                <p>Yakin ingin menghapus data lansia <strong>{{ $lansia->nama }}</strong>?</p>
+                <p>Yakin ingin menghapus data kader <strong>{{ $kader->nama }}</strong>?</p>
             </div>
             <div class="modal-footer border-0 justify-content-center pb-4">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                <form action="{{ route('lansia.destroy', $lansia->id) }}" method="POST">
+                <form action="{{ route('kader.destroy', $kader->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Hapus</button>

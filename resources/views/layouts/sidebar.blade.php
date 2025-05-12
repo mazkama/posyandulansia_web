@@ -83,20 +83,20 @@
         </li>
 
         <!-- Kader -->
-        <li class="menu-item">
+        <li class="menu-item {{ Request::is('kader*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-files"></i>
                 <div data-i18n="Kader">Kader</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="../front-pages/landing-page.html" class="menu-link" target="_blank">
+                <li class="menu-item {{ Request::is('kader') ? 'active' : '' }}">
+                    <a href="{{ route('kader.index') }}" class="menu-link">
                         <div data-i18n="Data Kader">Data Kader</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="../front-pages/pricing-page.html" class="menu-link" target="_blank">
-                        <div data-i18n="Tambah Kader">Tambah Kader</div>
+              <li class="menu-item {{ Request::is('kader/create') ? 'active' : '' }}">
+                    <a href="{{ route('kader.create') }}" class="menu-link">
+                        <div data-i18n="Tambah Data">Tambah Data</div>
                     </a>
                 </li>
             </ul>
