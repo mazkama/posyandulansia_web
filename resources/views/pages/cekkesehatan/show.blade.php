@@ -86,8 +86,8 @@
                             @foreach ($lansiaBelumCek as $index => $lansia)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $lansia->nama }}</td>
                                     <td>{{ $lansia->id }}</td>
+                                    <td>{{ $lansia->nama }}</td>
                                     <td>{{ $lansia->nik }}</td>
                                     <td>{{ $lansia->ttl }}</td>
                                     <td>
@@ -104,9 +104,44 @@
 
                 </div>
             </div>
-        </div>
-
+        </div> 
     </div>
+    @if (session('diagnosa') || session('kesimpulan'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    title: '🩺 Hasil Pemeriksaan Kesehatan',
+                    html: `
+                        <div style="text-align: left;">
+                            <p><strong>Diagnosa:</strong></p>
+                            <ul style="padding-left: 20px; margin-top: -10px;">
+                                @foreach (session('diagnosa') as $item)
+                                    <li>{{ $item }}</li>
+                                @endforeach
+                            </ul>
+                            <hr>
+                            <p><strong>Kesimpulan:</strong></p>
+                            <div style="max-height: 200px; overflow-y: auto; padding-right: 5px;">
+                                <ul style="padding-left: 20px;">
+                                    @foreach (session('kesimpulan') as $item)
+                                        <li>{{ $item }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    `,
+                    width: 600,
+                    icon: 'info',
+                    confirmButtonText: 'Tutup',
+                    customClass: {
+                        popup: 'rounded-3 shadow'
+                    }
+                });
+            });
+        </script>
+    @endif 
+
     <script>
         $(document).ready(function() {
             $('#kehadiranTable').DataTable({

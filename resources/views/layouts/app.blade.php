@@ -23,6 +23,8 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
 
@@ -95,7 +97,7 @@
             <!-- Layout container -->
             <div class="layout-page">
                 <!-- Navbar -->
-                @include('layouts.navbar')
+                {{-- @include('layouts.navbar') --}}
                 <!-- / Navbar -->
 
                 <!-- Content wrapper -->
@@ -157,6 +159,8 @@
     <script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
     <script src="{{ asset('assets/js/form-wizard-numbered.js') }}"></script>
     <script src="{{ asset('assets/js/form-wizard-validation.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

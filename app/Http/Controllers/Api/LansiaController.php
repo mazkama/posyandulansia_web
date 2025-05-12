@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class LansiaController extends Controller
 {
-    public function getAllLansia()
+    public function index()
     {
         $lansia = Lansia::paginate(10);
 
