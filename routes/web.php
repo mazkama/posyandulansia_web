@@ -67,5 +67,11 @@ Route::get('/riwayat-kesehatan/show/{id}', [RiwayatKesehatanController::class, '
 Route::resource('berita', BeritaController::class);
 Route::delete('berita/{berita}', [BeritaController::class, 'destroy'])->name('berita.destroy');
 
+<<<<<<< HEAD
+=======
+// Add these routes to your routes/web.php file
+
+// Export routes for CekKesehatan
+>>>>>>> HEAD@{1}
 Route::get('cek-kesehatan/export-pdf', [CekKesehatanController::class, 'exportPDF'])->name('cekKesehatan.exportPDF');
 Route::get('cek-kesehatan/export-excel', [CekKesehatanController::class, 'exportExcel'])->name('cekKesehatan.exportExcel');
