@@ -7,7 +7,15 @@ use App\Models\Jadwal;
 use App\Models\Kehadiran;
 use App\Models\Lansia;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
 use Kreait\Firebase\Factory;
+=======
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use App\Exports;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\CekKesehatanExport;
+>>>>>>> 5228d00 (laporankesehatan)
 
 class CekKesehatanController extends Controller
 {
@@ -381,6 +389,7 @@ class CekKesehatanController extends Controller
     {
         $credentialsPath = storage_path('app/firebase_credentials.json');
 
+<<<<<<< HEAD
         try {
             // Menginisialisasi Firebase
             $firebase = (new Factory)
@@ -466,6 +475,58 @@ class CekKesehatanController extends Controller
             \Log::error('Update Total Firebase Error:', ['message' => $e->getMessage()]);
             return false;
         }
+=======
+    public function exportPDF(Request $request)
+    {
+        $jadwalId = $request->query('jadwal_id');
+        $jadwal = Jadwal::findOrFail($jadwalId);
+
+        // Ambil data cek kesehatan berdasarkan jadwal dengan relasi lansia
+        $cekKesehatan = CekKesehatan::with('lansia')
+            ->where('jadwal_id', $jadwalId)
+            ->get();
+
+        // Setup data untuk view
+        $data = [
+            'title' => 'Laporan Pemeriksaan Kesehatan Lansia',
+            'date' => date('d/m/Y'),
+            'jadwal' => $jadwal,
+            'cekKesehatan' => $cekKesehatan
+        ];
+
+        // Buat instance Dompdf dan atur opsinya
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        
+        $dompdf = new Dompdf($options);
+
+        // Render blade menjadi HTML
+        $html = view('pages.cekkesehatan.pdf', $data)->render();
+
+        // Load HTML ke dompdf
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        // Stream file PDF ke browser
+        return $dompdf->stream('laporan-pemeriksaan-kesehatan-lansia-' . date('Y-m-d') . '.pdf');
+    }
+
+    
+    /**
+     * Export data pemeriksaan kesehatan lansia ke Excel
+     */
+    public function exportExcel(Request $request)
+    {
+        $jadwalId = $request->query('jadwal_id');
+        
+        // Nama file excel yang akan didownload
+        $fileName = 'laporan-pemeriksaan-kesehatan-lansia-' . date('Y-m-d') . '.xlsx';
+        
+        // Export menggunakan Maatwebsite Excel dengan custom export class
+        return Excel::download(new CekKesehatanExport($jadwalId), $fileName);
+>>>>>>> 5228d00 (laporankesehatan)
     }
 
 

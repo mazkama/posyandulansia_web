@@ -79,8 +79,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById("create_tanggal_publish").setAttribute("min", today);
-    document.getElementById("edit_tanggal_publish").setAttribute("min", today);
 
     // Preview foto di create
     document.getElementById('create_foto').addEventListener('change', function(e) {
