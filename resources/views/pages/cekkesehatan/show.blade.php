@@ -70,6 +70,21 @@
                 <p class="text-muted mb-3">Read the <a href="https://datatables.net/" target="_blank">
                         Official DataTables Documentation </a> for a full list of instructions and other
                     options.</p>
+                    <div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Data Pemeriksaan Kesehatan Lansia</h5>
+                <div class="export-buttons">
+                    <a href="{{ route('cekKesehatan.exportPDF', ['jadwal_id' => $jadwalId]) }}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-file-pdf mr-1"></i> Export PDF
+                    </a>
+                    <a href="{{ route('cekKesehatan.exportExcel', ['jadwal_id' => $jadwalId]) }}" class="btn btn-success btn-sm ml-2">
+                        <i class="fas fa-file-excel mr-1"></i> Export Excel
+                    </a>
+                </div>
+            </div>
+
                 <div class="table-responsive">
                     <table class="table" id="kehadiranTable">
                         <thead>
