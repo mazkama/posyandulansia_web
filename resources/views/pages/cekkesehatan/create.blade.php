@@ -112,11 +112,5 @@
         </div>
     </div>
     
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> HEAD@{1}
 @endsection
-=======
-@endsection
->>>>>>> 5228d00 (laporankesehatan)
+

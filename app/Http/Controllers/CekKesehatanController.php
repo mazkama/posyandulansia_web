@@ -7,23 +7,13 @@ use App\Models\Jadwal;
 use App\Models\Kehadiran;
 use App\Models\Lansia;
 use Illuminate\Http\Request;
-<<<<<<< HEAD
 use Kreait\Firebase\Factory;
-=======
-<<<<<<< HEAD
-use Kreait\Firebase\Factory;
-=======
->>>>>>> HEAD@{1}
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use App\Exports;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\CekKesehatanExport;
-<<<<<<< HEAD
 
-=======
->>>>>>> 5228d00 (laporankesehatan)
->>>>>>> HEAD@{1}
 
 class CekKesehatanController extends Controller
 {
@@ -397,10 +387,6 @@ class CekKesehatanController extends Controller
     {
         $credentialsPath = storage_path('app/firebase_credentials.json');
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> HEAD@{1}
         try {
             // Menginisialisasi Firebase
             $firebase = (new Factory)
@@ -486,15 +472,10 @@ class CekKesehatanController extends Controller
             \Log::error('Update Total Firebase Error:', ['message' => $e->getMessage()]);
             return false;
         }
-<<<<<<< HEAD
     }
 
 
       public function exportPDF(Request $request)
-=======
-=======
-    public function exportPDF(Request $request)
->>>>>>> HEAD@{1}
     {
         $jadwalId = $request->query('jadwal_id');
         $jadwal = Jadwal::findOrFail($jadwalId);
@@ -544,10 +525,6 @@ class CekKesehatanController extends Controller
         
         // Export menggunakan Maatwebsite Excel dengan custom export class
         return Excel::download(new CekKesehatanExport($jadwalId), $fileName);
-<<<<<<< HEAD
-=======
->>>>>>> 5228d00 (laporankesehatan)
->>>>>>> HEAD@{1}
     }
 
 
