@@ -79,21 +79,27 @@
                         action="{{ route('kehadiran.cetakLaporanPdf') }}" 
                         method="POST" 
                         onsubmit="return confirm('Yakin ingin mencetak laporan dan mengubah status menjadi selesai?')"
+                        style="display: inline-block;"
                     >
                         @csrf
                         <input type="hidden" name="jadwal_id" value="{{ $jadwalId }}">
-                        <button type="submit" class="btn btn-danger">Cetak PDF</button>
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-file-pdf mr-1"></i> Cetak PDF
+                        </button>
                     </form>
-        
                     <form 
                         action="{{ route('kehadiran.cetakLaporanExcel') }}" 
                         method="POST" 
                         onsubmit="return confirm('Yakin ingin mencetak laporan dan mengubah status menjadi selesai?')"
+                        style="display: inline-block; margin-left: 8px;"
                     >
                         @csrf
                         <input type="hidden" name="jadwal_id" value="{{ $jadwalId }}">
-                        <button type="submit" class="btn btn-success">Cetak Excel</button>
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="fas fa-file-excel mr-1"></i> Cetak Excel
+                        </button>
                     </form>
+
                 </div>
         
                 <div class="table-responsive">

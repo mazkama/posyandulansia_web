@@ -25,6 +25,12 @@ class BeritaController extends Controller
 
     }
 
+    public function show($id)
+    {
+        $berita = Berita::findOrFail($id);
+        return view('pages.berita.show', compact('berita'));
+    }
+
     /**
      * Store a newly created resource in storage.
      */

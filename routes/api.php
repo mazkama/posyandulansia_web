@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\LansiaController;
 use App\Http\Controllers\Api\KaderController;
 use App\Http\Controllers\Api\CekKesehatanController;
 use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\Api\KehadiranController;
 use App\Http\Controllers\Api\NotifikasiController as NotifControlller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,29 +26,35 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+//Route Auth
 Route::post('login', [AuthController::class, 'login']);
 Route::get('check-token', [AuthController::class, 'checkToken'])->middleware('auth:sanctum');
 Route::post('update-password', [AuthController::class, 'updatePassword'])->middleware('auth:sanctum');
 
-
+//Route Jadwal
 Route::get('cekJadwal', [JadwalController::class, 'cekJadwal']);
+Route::get('jadwal', [JadwalController::class, 'index']);
 
+//Route Kehadiran
+Route::get('/kehadiran/jadwal/{jadwal_id}', [KehadiranController::class, 'getLansiaByJadwal']);
 
-Route::get('getLansias', [LansiaController::class, 'getAllLansia']);
+//Route Lansia
+Route::get('getLansias', [LansiaController::class, 'index']);
 Route::get('lansiaSearch', [LansiaController::class, 'searchLansia']);
 Route::get('lansia/{userId}', [LansiaController::class, 'show']);
 
-
+//Route Kader
 Route::get('kader/{userId}', [KaderController::class, 'show']);
 
-
+//Route Cek Kesehatan
 Route::post('cek-kesehatan', [CekKesehatanController::class, 'store']);
-Route::get('cek-kesehatan/{lansia_id}', [CekKesehatanController::class, 'getByLansiaId']);
+Route::get('cek-kesehatan', [CekKesehatanController::class, 'getByLansiaId']);
 Route::get('cek-kesehatan/{lansia_id}/parameter/{parameter}', [CekKesehatanController::class, 'getKesehatanParameter']);
 
-
+//Route Notifikasi
 Route::post('/send-notification', [NotifikasiController::class, 'sendToTopic']);
 Route::get('/getNotifikasi', [NotifControlller::class, 'getNotifikasi']);
+
+
 
 Route::delete('/firebase/users', [NotifikasiController::class, 'deleteAllFirebaseUsers']);
