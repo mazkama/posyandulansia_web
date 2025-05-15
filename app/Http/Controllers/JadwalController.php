@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jadwal;
+use App\Models\CekKesehatan;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
@@ -14,31 +15,29 @@ class JadwalController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index()
-     {
-         $jadwals = Jadwal::orderBy('tanggal', 'desc')->get();
-         $now = Carbon::now();
-     
-         foreach ($jadwals as $jadwal) {
-             if ($jadwal->status !== 'selesai') {
-                 if ($now->lt(Carbon::parse($jadwal->tanggal))) {
-                     $jadwal->status = 'belum_dimulai';
-                 } elseif ($now->isSameDay(Carbon::parse($jadwal->tanggal))) {
-                     $jadwal->status = 'berlangsung';
-                 } else {
-                     $jadwal->status = 'selesai';
-                 }
-     
-                 // Simpan jika status berubah
-                 if ($jadwal->isDirty('status')) {
-                     $jadwal->save();
-                 }
-             }
-         }
-     
-         return view('pages.jadwal.index', compact('jadwals'));
-     }
-     
+    public function index()
+    {
+        $jadwals = Jadwal::orderBy('tanggal', 'desc')->get();
+        $now = Carbon::now();
+
+        foreach ($jadwals as $jadwal) {
+            if ($jadwal->status !== 'selesai') {
+                if ($now->lt(Carbon::parse($jadwal->tanggal))) {
+                    $jadwal->status = 'belum_dimulai';
+                } elseif ($now->isSameDay(Carbon::parse($jadwal->tanggal))) {
+                    $jadwal->status = 'berlangsung';
+                } else {
+                    $jadwal->status = 'selesai';
+                }
+
+                if ($jadwal->isDirty('status')) {
+                    $jadwal->save();
+                }
+            }
+        }
+
+        return view('pages.jadwal.index', compact('jadwals'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -65,15 +64,15 @@ class JadwalController extends Controller
             'lokasi.required'    => 'Lokasi wajib diisi.',
             'lokasi.max'         => 'Lokasi maksimal 255 karakter.',
         ]);
-        
+
         // Konversi tanggal ke format hari
         $hari = Carbon::parse($validated['tanggal'])->translatedFormat('l');
         $tanggal = Carbon::parse($validated['tanggal'])->translatedFormat('j F Y');
-    
+
         // Tentukan status secara otomatis**
         $now = Carbon::now();
         $tanggalMulai = Carbon::parse($validated['tanggal']);
-    
+
         if ($now->lt($tanggalMulai)) {
             $status = 'belum_dimulai';
         } elseif ($now->isSameDay($tanggalMulai)) {
@@ -81,10 +80,10 @@ class JadwalController extends Controller
         } else {
             $status = 'selesai';
         }
-    
+
         // Format pesan notifikasi
         $pesan = "Posyandu lansia selanjutnya akan dilaksanakan {$hari}, {$tanggal} pukul {$validated['waktu']} di {$validated['lokasi']}. Kami mengharapkan kehadiran saudara/saudari.";
-    
+
         $lastJadwal = Jadwal::orderBy('tanggal', 'desc')->first();
         if ($lastJadwal && $lastJadwal->status !== 'selesai') {
             return redirect()->route('jadwal.index')->with('error', 'Jadwal sebelumnya belum selesai, tidak bisa membuat jadwal baru.');
@@ -94,19 +93,19 @@ class JadwalController extends Controller
             'tanggal' => $validated['tanggal'],
             'waktu'   => $validated['waktu'],
             'lokasi'  => $validated['lokasi'],
-            'status'  => $status, 
+            'status'  => $status,
         ]);
-    
+
         // Kirim notifikasi dengan pesan 
         app()->call('App\Http\Controllers\NotifikasiController@store', [
             'request' => new Request([
                 'pesan' => $pesan
             ])
         ]);
-    
+
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dibuat.');
     }
-    
+
 
 
     /**
@@ -151,17 +150,17 @@ class JadwalController extends Controller
             'lokasi.required'    => 'Lokasi wajib diisi.',
             'lokasi.max'         => 'Lokasi maksimal 255 karakter.',
         ]);
-    
+
         // Ambil data jadwal lama
         $jadwal = Jadwal::findOrFail($id);
-    
+
         // Update data dengan input baru
         $jadwal->update($validated);
-    
+
         // Tentukan status secara otomatis
         $now = Carbon::now();
         $tanggalMulai = Carbon::parse($validated['tanggal']);
-    
+
         if ($now->lt($tanggalMulai)) {
             $jadwal->status = 'belum_dimulai';
         } elseif ($now->isSameDay($tanggalMulai)) {
@@ -169,13 +168,13 @@ class JadwalController extends Controller
         } else {
             $jadwal->status = 'selesai';
         }
-    
+
         $jadwal->save();
-    
+
         // Redirect dengan pesan sukses**
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
@@ -201,12 +200,11 @@ class JadwalController extends Controller
         try {
             // Inisialisasi Firebase Database dengan Kreait
             $firebase = (new Factory)
-                ->withServiceAccount($credentialsPath) // Pastikan path benar
+                ->withServiceAccount($credentialsPath)
                 ->withDatabaseUri('https://posyandulansia-f9b02-default-rtdb.asia-southeast1.firebasedatabase.app/');
 
             $database = $firebase->createDatabase();
 
-            // Hapus data jadwal dari Firebase
             $database->getReference("jadwal/{$jadwalId}")->remove();
 
             return response()->json(['success' => true, 'message' => 'Jadwal berhasil dihapus dari Firebase.']);
@@ -215,5 +213,23 @@ class JadwalController extends Controller
         }
     }
 
-    
+    public function riwayatIndex()
+    {
+        $jadwals = Jadwal::orderBy('tanggal', 'desc')->get();
+        return view('pages.riwayatkesehatan.index', compact('jadwals'));
+    }
+    public function riwayatKesehatan($jadwal_id)
+    {
+        $riwayats = CekKesehatan::with('lansia')
+            ->where('jadwal_id', $jadwal_id)
+            ->get();
+
+        $jadwal = Jadwal::find($jadwal_id);
+
+        if (!$jadwal) {
+            return redirect()->route('jadwal.index')->with('error', 'Jadwal tidak ditemukan.');
+        }
+
+        return view('pages.riwayatkesehatan.list', compact('riwayats', 'jadwal'));
+    }
 }

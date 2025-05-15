@@ -63,10 +63,14 @@ Route::post('/kesehatan-cek/store',[CekKesehatanController::class, 'store'])->na
 Route::get('/riwayat-kesehatan', [RiwayatKesehatanController::class, 'index'])->name('riwayatKesehatan.index');
 Route::get('/riwayat-kesehatan/list', [RiwayatKesehatanController::class, 'list'])->name('riwayatKesehatan.list');
 Route::get('/riwayat-kesehatan/show/{id}', [RiwayatKesehatanController::class, 'show'])->name('riwayatKesehatan.show');
+Route::get('/riwayat-kesehatan', [JadwalController::class, 'riwayatIndex'])->name('riwayatKesehatan.index');
+Route::get('/riwayat-kesehatan/jadwal/{jadwal_id}', [RiwayatKesehatanController::class, 'riwayatKesehatan']) ->name('riwayatkesehatan.riwayatKesehatan');
+
 
 Route::resource('berita', BeritaController::class);
 Route::delete('berita/{berita}', [BeritaController::class, 'destroy'])->name('berita.destroy');
 
 
-Route::get('cek-kesehatan/export-pdf', [CekKesehatanController::class, 'exportPDF'])->name('cekKesehatan.exportPDF');
-Route::get('cek-kesehatan/export-excel', [CekKesehatanController::class, 'exportExcel'])->name('cekKesehatan.exportExcel');
+Route::get('riwayat-kesehatan/export-pdf', [RiwayatKesehatanController::class, 'exportPDF'])->name('riwayatKesehatan.exportPDF');
+Route::get('riwayat-kesehatan/export-excel', [RiwayatKesehatanController::class, 'exportExcel'])->name('riwayatKesehatan.exportExcel');
+

@@ -31,20 +31,26 @@
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Menu">Menu</span>
         </li>
-        <li class="menu-item {{ Request::is('jadwal','kehadiran') ? 'active' : '' }}">
+        <li class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
+            <a href="{{ route('dashboard') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-home"></i>
+                <div data-i18n="Dashboard">Dashboard</div>
+            </a>
+        </li>
+        <li class="menu-item {{ Request::is('jadwal', 'kehadiran') ? 'active' : '' }}">
             <a href="{{ route('jadwal.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-calendar"></i>
                 <div data-i18n="Jadwal">Jadwal</div>
             </a>
         </li>
         <li class="menu-item {{ Request::is('kesehatan-cek*') ? 'active' : '' }}">
-            <a href="{{route('cekKesehatan.index')}}" class="menu-link">
+            <a href="{{ route('cekKesehatan.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-layout-kanban"></i>
                 <div data-i18n="Cek Kesehatan">Cek Kesehatan</div>
             </a>
         </li>
         <li class="menu-item {{ Request::is('riwayat-kesehatan*') ? 'active' : '' }}">
-            <a href="{{route('riwayatKesehatan.index')}}" class="menu-link">
+            <a href="{{ route('riwayatKesehatan.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-clock"></i>
                 <div data-i18n="Riwayat Kesehatan">Riwayat Kesehatan</div>
             </a>
@@ -55,7 +61,7 @@
                 <div data-i18n="Berita">Berita</div>
             </a>
         </li>
-        
+
 
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Data Pengguna">Data &amp; Pengguna</span>
@@ -94,7 +100,7 @@
                         <div data-i18n="Data Kader">Data Kader</div>
                     </a>
                 </li>
-              <li class="menu-item {{ Request::is('kader/create') ? 'active' : '' }}">
+                <li class="menu-item {{ Request::is('kader/create') ? 'active' : '' }}">
                     <a href="{{ route('kader.create') }}" class="menu-link">
                         <div data-i18n="Tambah Data">Tambah Data</div>
                     </a>

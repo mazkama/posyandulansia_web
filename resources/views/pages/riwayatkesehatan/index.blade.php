@@ -4,39 +4,37 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card mt-4">
             <div class="card-body">
-                <h4 class="mb-3 mb-md-2">Data Lansia</h4>
-                <p class="text-muted mb-3">Read the <a href="https://datatables.net/" target="_blank">
-                        Official DataTables Documentation </a> for a full list of instructions and other
-                    options.</p>
+                <h4 class="mb-3 mb-md-2">Daftar Jadwal Pemeriksaan</h4>
                 <div class="table-responsive">
-                    <table class="table" id="usersTable">
+                    <table class="table" id="jadwalTable">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Nama Lengkap</th>
-                                <th>NIK</th>
-                                <th>Tempat Tanggal Lahir</th>
-                                {{-- <th>Umur</th>
-                            <th>Alamat</th>
-                            <th>No HP</th> --}}
+                                <th>Tanggal</th>
+                                <th>Lokasi</th>
+                                <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($lansias as $index => $lansia)
+                            @foreach ($jadwals as $index => $jadwal)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $lansia->nama }}</td>
-                                    <td>{{ $lansia->nik }}</td>
-                                    <td>{{ $lansia->ttl }}</td>
-                                    {{-- <td>{{ $lansia->umur }}</td>
-                                <td>{{ $lansia->alamat }}</td>
-                                <td>{{ $lansia->no_hp }}</td> --}}
+                                    <td>{{ $jadwal->tanggal }}</td>
+                                    <td>{{ $jadwal->lokasi }}</td>
                                     <td>
-                                        <a href="{{ route('riwayatKesehatan.list', ['lansia_id' => $lansia->id]) }}"
+                                        @if ($jadwal->status === 'belum_dimulai')
+                                            <span class="badge bg-warning">Belum Dimulai</span>
+                                        @elseif ($jadwal->status === 'berlangsung')
+                                            <span class="badge bg-primary">Berlangsung</span>
+                                        @else
+                                            <span class="badge bg-success">Selesai</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('riwayatkesehatan.riwayatKesehatan', ['jadwal_id' => $jadwal->id]) }}"
                                             class="btn btn-warning btn-sm mb-1">Lihat Riwayat</a>
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>
@@ -45,15 +43,14 @@
             </div>
         </div>
     </div>
+
     <script>
         $(document).ready(function() {
-            $('#usersTable').DataTable({
+            $('#jadwalTable').DataTable({
                 language: {
                     emptyTable: "Data tidak tersedia"
                 }
             });
         });
     </script>
-
-
 @endsection
