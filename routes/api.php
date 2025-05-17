@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\KaderController;
 use App\Http\Controllers\Api\CekKesehatanController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\Api\KehadiranController;
+use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\NotifikasiController as NotifControlller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,9 @@ Route::get('kader/{userId}', [KaderController::class, 'show']);
 Route::post('cek-kesehatan', [CekKesehatanController::class, 'store']);
 Route::get('cek-kesehatan', [CekKesehatanController::class, 'getByLansiaId']);
 Route::get('cek-kesehatan/{lansia_id}/parameter/{parameter}', [CekKesehatanController::class, 'getKesehatanParameter']);
+
+//Route Berita
+Route::get('/berita', [BeritaController::class, 'index']);
 
 //Route Notifikasi
 Route::post('/send-notification', [NotifikasiController::class, 'sendToTopic']);

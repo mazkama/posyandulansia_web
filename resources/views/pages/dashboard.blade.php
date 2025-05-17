@@ -12,7 +12,7 @@
                         <i class="fas fa-chart-line fa-lg text-primary"></i>
                     </div>
                     <div>
-                        <h1 class="h3 fw-bold mb-0">Dashboard</h1>
+                        <h1 class="h3 fw-bold mb-0 text-white">Dashboard</h1>
                         <p class="mb-0 opacity-75">Selamat datang di sistem pendataan lansia</p>
                     </div>
                 </div>

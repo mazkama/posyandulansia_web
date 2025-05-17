@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="index.html" class="app-brand-link">
+        <a href=""{{ route('dashboard') }}"" class="app-brand-link">
             <span class="app-brand-logo demo">
                 <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -27,15 +27,15 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        <!-- Menu -->
-        <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Menu">Menu</span>
-        </li>
-        <li class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
+        <li class="mt-5 menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
             <a href="{{ route('dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-home"></i>
                 <div data-i18n="Dashboard">Dashboard</div>
             </a>
+        </li>
+        <!-- Menu -->
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Menu">Menu</span>
         </li>
         <li class="menu-item {{ Request::is('jadwal', 'kehadiran') ? 'active' : '' }}">
             <a href="{{ route('jadwal.index') }}" class="menu-link">
