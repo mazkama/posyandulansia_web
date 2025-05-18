@@ -52,13 +52,13 @@ class KaderSeeder extends Seeder
                 'no_hp'   => $faker->phoneNumber,
             ]);
 
-            // Buat pengguna Firebase untuk kader
-            $firebaseUser = $this->firebaseAuth->createUser([
-                'email' => 'qilaynin+' . $username . '@gmail.com', // Atur email untuk pengguna
-                'password' => 'password123',
-                'displayName' => $faker->name,
-                'disabled' => false,
-            ]);
+            // // Buat pengguna Firebase untuk kader
+            // $firebaseUser = $this->firebaseAuth->createUser([
+            //     'email' => 'qilaynin+' . $username . '@gmail.com', // Atur email untuk pengguna
+            //     'password' => 'password123',
+            //     'displayName' => $faker->name,
+            //     'disabled' => false,
+            // ]);
 
             // Anda bisa menyimpan UID Firebase ke dalam tabel `users` di Laravel, jika perlu
             // $user->firebase_uid = $firebaseUser->uid;

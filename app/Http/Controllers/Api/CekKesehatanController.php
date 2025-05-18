@@ -542,7 +542,7 @@ class CekKesehatanController extends Controller
         $columns = [
             'berat_badan',
             'gula_darah',
-            'kolestrol',
+            'kolestrol',    
             'asam_urat',
             'tekanan_darah'
         ];
@@ -555,8 +555,9 @@ class CekKesehatanController extends Controller
         }
 
         // Ambil data cek kesehatan berdasarkan lansia_id
-        $cekKesehatan = CekKesehatan::where('lansia_id', $id)
-            ->get(); // Dapatkan semua data cek kesehatan tanpa filter berdasarkan parameter
+        $cekKesehatan = CekKesehatan::whereHas('lansia', function ($query) use ($id) {
+            $query->where('user_id', $id);
+        })->get();
 
         // Jika tidak ada data ditemukan
         if ($cekKesehatan->isEmpty()) {
@@ -594,7 +595,7 @@ class CekKesehatanController extends Controller
                     'jadwal_id' => $record->jadwal_id,
                     'tanggal' => $record->tanggal,
                     $parameter => $parameterValue, // Menggunakan nilai parameter yang sudah digabung
-                    'diagnosa' => $diagnosaValue,
+                    // 'diagnosa' => $diagnosaValue,
                     'created_at' => $record->created_at,
                     'updated_at' => $record->updated_at,
                 ];

@@ -50,7 +50,7 @@ Route::get('kader/{userId}', [KaderController::class, 'show']);
 //Route Cek Kesehatan
 Route::post('cek-kesehatan', [CekKesehatanController::class, 'store']);
 Route::get('cek-kesehatan', [CekKesehatanController::class, 'getByLansiaId']);
-Route::get('cek-kesehatan/{lansia_id}/parameter/{parameter}', [CekKesehatanController::class, 'getKesehatanParameter']);
+Route::get('cek-kesehatan/{userId}/parameter/{parameter}', [CekKesehatanController::class, 'getKesehatanParameter']);
 
 //Route Berita
 Route::get('/berita', [BeritaController::class, 'index']);
