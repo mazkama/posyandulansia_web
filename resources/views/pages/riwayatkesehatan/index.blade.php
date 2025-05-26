@@ -5,6 +5,19 @@
         <div class="card mt-4">
             <div class="card-body">
                 <h4 class="mb-3 mb-md-2">Daftar Jadwal Pemeriksaan</h4>
+                <form method="GET" action="{{ route('riwayatKesehatan.index') }}" class="row g-3 mb-3 justify-content-end">
+                    <div class="col-auto">
+                        <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}"
+                            placeholder="Tanggal Mulai">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ route('riwayatKesehatan.index') }}" class="btn btn-secondary">Reset</a>
+                    </div>
+                </form>
+
                 <div class="table-responsive">
                     <table class="table" id="jadwalTable">
                         <thead>

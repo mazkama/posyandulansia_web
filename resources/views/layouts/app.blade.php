@@ -27,18 +27,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
 
@@ -98,7 +86,7 @@
             <!-- Layout container -->
             <div class="layout-page">
                 <!-- Navbar -->
-                {{-- @include('layouts.navbar') --}}
+                @include('layouts.navbar')
                 <!-- / Navbar -->
 
                 <!-- Content wrapper -->
@@ -126,6 +114,26 @@
     </div>
     <!-- / Layout wrapper -->
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('btn-logout').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Apakah Anda yakin ingin keluar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, keluar!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            })
+        });
+    </script>
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
 

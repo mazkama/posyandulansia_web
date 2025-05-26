@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             KehadiranSeeder::class,
             CekKesehatanSeeder::class,
             BeritaSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

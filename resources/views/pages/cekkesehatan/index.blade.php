@@ -10,11 +10,24 @@
                     <div>
                         <h4 class="mb-3 mb-md-2">Data Cek Kesehatan</h4>
                         <p class="text-muted mb-3">
-                            Read the <a href="https://datatables.net/" target="_blank">Official DataTables Documentation</a> 
+                            Read the <a href="https://datatables.net/" target="_blank">Official DataTables Documentation</a>
                             for a full list of instructions and other options.
                         </p>
                     </div>
                 </div>
+                <form method="GET" action="{{ route('cekKesehatan.index') }}" class="row g-3 mb-3 justify-content-end">
+                    <div class="col-auto">
+                        <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}"
+                            placeholder="Tanggal">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ route('cekKesehatan.index') }}" class="btn btn-secondary">Reset</a>
+                    </div>
+                </form>
+
 
                 <!-- Tabel Data Cek Kesehatan -->
                 <div class="table-responsive">
@@ -46,10 +59,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a class="btn btn-warning btn-sm" href="{{ route('cekKesehatan.show',['jadwal_id' => $jadwal->id]) }}">
+                                        <a class="btn btn-warning btn-sm"
+                                            href="{{ route('cekKesehatan.show', ['jadwal_id' => $jadwal->id]) }}">
                                             Cek Kesehatan
                                         </a>
-                                    </td> 
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

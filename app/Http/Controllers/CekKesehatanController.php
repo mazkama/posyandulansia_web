@@ -12,11 +12,19 @@ use Kreait\Firebase\Factory;
 
 class CekKesehatanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $jadwals = Jadwal::orderBy('tanggal', 'desc')->get();
+        $query = Jadwal::orderBy('tanggal', 'desc');
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('tanggal', '=', $request->start_date);
+        }
+
+        $jadwals = $query->get();
+
         return view('pages.cekkesehatan.index', compact('jadwals'));
     }
+
 
     public function show(Request $request)
     {
@@ -106,7 +114,7 @@ class CekKesehatanController extends Controller
     //         'asam_urat' => 'nullable|numeric|min:0',
     //         'diagnosa' => 'nullable|string'
     //     ]);
-        
+
 
     //     // Ambil nilai atau set ke 0 jika null
     //     $berat_badan = $request->berat_badan ?? 0;
@@ -215,7 +223,7 @@ class CekKesehatanController extends Controller
     {
         $request->validate([
             'lansia_id' => 'required|exists:lansia,id',
-            'jadwal_id' => 'required|exists:jadwal,id', 
+            'jadwal_id' => 'required|exists:jadwal,id',
             'berat_badan' => 'required|numeric|min:1',
             'tekanan_darah_sistolik' => 'required|numeric|min:1',
             'tekanan_darah_diastolik' => 'required|numeric|min:1',
@@ -250,7 +258,7 @@ class CekKesehatanController extends Controller
             if ($asam_urat > 7) {
                 $diagnosa[] = 'Asam Urat Tinggi';
             }
- 
+
             // Kesimpulan
             $jumlahDiagnosa = count($diagnosa);
 
@@ -369,7 +377,6 @@ class CekKesehatanController extends Controller
                 ->with('success', 'Data berhasil disimpan.')
                 ->with('diagnosa', $diagnosa)
                 ->with('kesimpulan', $kesimpulan);
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
@@ -420,7 +427,6 @@ class CekKesehatanController extends Controller
             $this->updateTotal($jadwalId);
 
             return true;
-
         } catch (\Exception $e) {
             \Log::error('Gagal menghapus antrian Firebase:', ['message' => $e->getMessage()]);
             return false;
@@ -462,7 +468,6 @@ class CekKesehatanController extends Controller
             $database->getReference("jadwal/$jadwalId")->update($firebaseData);
 
             return true;
-
         } catch (\Exception $e) {
             \Log::error('Update Total Firebase Error:', ['message' => $e->getMessage()]);
             return false;
