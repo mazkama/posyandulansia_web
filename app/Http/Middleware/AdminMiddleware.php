@@ -21,7 +21,7 @@ class AdminMiddleware
             return $next($request);
         }
 
-        // Kalau bukan admin, redirect ke halaman lain atau logout
-        return redirect()->route('login')->with('error', 'Access denied. You must be an admin.');
+        // Kalau bukan admin, redirect ke halaman login dengan pesan error 
+        return redirect()->route('login')->with('error', 'Akses ditolak. Anda harus menjadi admin.');
     }
 }

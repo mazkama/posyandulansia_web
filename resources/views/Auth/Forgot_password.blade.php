@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Login - Sistem Posyandu Lansia</title>
+    <title>Lupa Password - Sistem Posyandu Lansia</title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -41,8 +41,15 @@
             <div class="authentication-inner py-6">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="mb-1">Selamat Datang di Sistem Posyandu Lansia! 👋</h4>
-                        <p class="mb-6">Silakan login untuk melanjutkan</p>
+                        <h4 class="mb-1">Lupa Password? 🔒</h4>
+                        <p class="mb-6">Masukkan email Anda yang terdaftar untuk menerima username dan password baru</p>
+
+                        {{-- Menampilkan pesan sukses --}}
+                        @if (session('status'))
+                            <div class="alert alert-success">
+                                {{ session('status') }}
+                            </div>
+                        @endif
 
                         {{-- Menampilkan pesan error --}}
                         @if (session('error'))
@@ -51,52 +58,27 @@
                             </div>
                         @endif
 
-                        {{-- Menampilkan pesan sukses (misal, setelah reset password) --}}
-                        @if (session('status'))
-                            <div class="alert alert-success">
-                                {{ session('status') }}
-                            </div>
-                        @endif
-
-                        <form id="formAuthentication" class="mb-4" action="{{ route('login.submit') }}"
+                        <form id="formResetPassword" class="mb-4" action="{{ route('password.email') }}"
                             method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username"
-                                    value="{{ old('username') }}" required autofocus />
-                                @error('username')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-
-                            <div class="mb-3 form-password-toggle">
-                                <label class="form-label" for="password">Password</label>
-                                <div class="input-group input-group-merge">
-                                    <input type="password" id="password" class="form-control" name="password"
-                                        required />
-                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                                </div>
-                                @error('password')
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    value="{{ old('email') }}" required autofocus />
+                                @error('email')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
 
                             <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
+                                <button class="btn btn-primary d-grid w-100" type="submit">Kirim</button>
                             </div>
                         </form>
 
                         <p class="text-center">
-                            <span>Lupa kata sandi?</span>
-                            <a href="{{ route('password.request') }}">
-                                <span>Klik di sini</span>
+                            <a href="{{ route('login') }}">
+                                <span>Kembali ke login</span>
                             </a>
-                        </p>
-
-                        <p class="text-center">
-                            <span>Belum punya akun?</span>
-                            <a href="{{ route('register') }}"><span>Daftar di sini</span></a>
                         </p>
                     </div>
                 </div>

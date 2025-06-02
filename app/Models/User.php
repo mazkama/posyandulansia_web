@@ -2,18 +2,30 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use  HasApiTokens, HasFactory;
-    protected $table = 'users'; // Menentukan nama tabel yang benar
-    protected $fillable = ['username', 'password', 'role'];
+    use HasApiTokens, HasFactory, Notifiable;  
 
+    protected $table = 'users'; 
+
+    protected $fillable = [
+        'username',
+        'password',
+        'role',
+        'email_verified_at', 
+    ];
+    protected $hidden = ['password'];
+
+    public function admin()
+    {
+        return $this->hasOne(Admin::class, 'user_id');
+    }
     public function lansia()
     {
         return $this->hasOne(Lansia::class, 'user_id');
@@ -24,6 +36,7 @@ class User extends Authenticatable
         return $this->hasOne(Kader::class, 'user_id');
     }
 }
+
 
 
 // class User extends Authenticatableb

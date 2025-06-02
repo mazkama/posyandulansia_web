@@ -115,7 +115,7 @@
             <h2>Statistik Kesehatan Lansia</h2>
             <table>
                 <tr>
-                    <td>Jumlah Gula Darah Tinggi (&gt; 140 mg/dL)</td>
+                    <td>Jumlah Diabetes Mellitus(&gt; 140 mg/dL)</td>
                     <td>: {{ $jumlah_gula_tinggi }} orang</td>
                 </tr>
                 <tr>
@@ -129,10 +129,6 @@
                 <tr>
                     <td>Jumlah Diabetes Mellitus (&gt; 200 mg/dL)</td>
                     <td>: {{ $jumlah_diabetes_mellitus }} orang</td>
-                </tr>
-                <tr>
-                    <td>Jumlah Tekanan Darah Tinggi (&gt; 140/90 mmHg)</td>
-                    <td>: {{ $jumlah_tekanan_darah_tinggi }} orang</td>
                 </tr>
             </table>
         </div>

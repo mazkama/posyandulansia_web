@@ -42,7 +42,6 @@ class CekKesehatanExport implements FromArray, WithTitle, ShouldAutoSize, WithSt
         $jumlah_gula_tinggi = $this->cekKesehatan->where('gula_darah', '>', 140)->count();
         $jumlah_asam_urat_tinggi = $this->cekKesehatan->where('asam_urat', '>', 7)->count();
         $jumlah_kolestrol_tinggi = $this->cekKesehatan->where('kolestrol', '>', 200)->count();
-        $jumlah_diabetes_mellitus = $this->cekKesehatan->where('gula_darah', '>', 200)->count();
         $jumlah_tekanan_darah_tinggi = $this->cekKesehatan->filter(function ($item) {
             return ($item->tekanan_darah_sistolik > 140 || $item->tekanan_darah_diastolik > 90);
         })->count();
@@ -58,10 +57,9 @@ class CekKesehatanExport implements FromArray, WithTitle, ShouldAutoSize, WithSt
 
         // Statistik Kesehatan Lansia (sesuai format PDF)
         $rows[] = ['Statistik Kesehatan Lansia'];
-        $rows[] = ['Jumlah Gula Darah Tinggi (> 140 mg/dL): ' . $jumlah_gula_tinggi . ' orang'];
+        $rows[] = ['Jumlah Diabetes Mellitus  (> 140 mg/dL): ' . $jumlah_gula_tinggi . ' orang'];
         $rows[] = ['Jumlah Asam Urat Tinggi (> 7 mg/dL): ' . $jumlah_asam_urat_tinggi . ' orang'];
         $rows[] = ['Jumlah Kolesterol Tinggi (> 200 mg/dL): ' . $jumlah_kolestrol_tinggi . ' orang'];
-        $rows[] = ['Jumlah Diabetes Mellitus (> 200 mg/dL): ' . $jumlah_diabetes_mellitus . ' orang'];
         $rows[] = ['Jumlah Tekanan Darah Tinggi (> 140/90 mmHg): ' . $jumlah_tekanan_darah_tinggi . ' orang'];
 
         $rows[] = ['']; // Baris kosong

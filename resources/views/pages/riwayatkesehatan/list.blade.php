@@ -11,7 +11,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-start justify-content-between">
                             <div class="content-left">
-                                <span class="text-heading">Gula Darah Tinggi</span>
+                                <span class="text-heading">Diabetes Mellitus</span>
                                 <div class="d-flex align-items-center my-1">
                                     <h2 class="mb-0 me-2">{{ $jumlah_gula_tinggi }}</h2>
                                 </div>
@@ -85,28 +85,6 @@
                             </div>
                             <div class="avatar">
                                 <span class="avatar-initial rounded bg-label-secondary">
-                                    <i class="ti ti-blood ti-26px"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Diabetes Mellitus --}}
-            <div class="col-sm-6 col-xl-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div class="content-left">
-                                <span class="text-heading">Diabetes Mellitus</span>
-                                <div class="d-flex align-items-center my-1">
-                                    <h2 class="mb-0 me-2">{{ $jumlah_diabetes_mellitus }}</h2>
-                                </div>
-                                <small class="mb-0">Gula Darah > 140 mg/dL</small>
-                            </div>
-                            <div class="avatar">
-                                <span class="avatar-initial rounded bg-label-primary">
                                     <i class="ti ti-dna ti-26px"></i>
                                 </span>
                             </div>
