@@ -54,6 +54,7 @@ class LansiaController extends Controller
             // Data biodata lansia
             'nama'         => 'required|string|max:255',
             'nik'          => 'required|digits:16|unique:lansia,nik',
+            'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
@@ -68,6 +69,7 @@ class LansiaController extends Controller
             'nik.required'         => 'NIK wajib diisi.',
             'nik.digits'           => 'NIK harus terdiri dari 16 angka.',
             'nik.unique'           => 'NIK sudah terdaftar.',
+            'jenis_kelamin.required'         => 'Jenis Kelamin wajib diisi.',
             'ttl.required'         => 'Tempat, Tanggal Lahir wajib diisi.',
             'umur.required'        => 'Umur wajib diisi.',
             'umur.integer'         => 'Umur harus berupa angka.',
@@ -90,13 +92,14 @@ class LansiaController extends Controller
 
             // Simpan data biodata lansia
             Lansia::create([
-                'user_id'       => $user->id,
-                'nama'          => $validated['nama'],
-                'nik'           => $validated['nik'],
-                'ttl'           => $validated['ttl'],
-                'umur'          => $validated['umur'],
-                'alamat'        => $validated['alamat'],
-                'no_hp'         => $validated['no_hp'],
+                'user_id'      => $user->id,
+                'nama'         => $validated['nama'],
+                'nik'          => $validated['nik'],
+                'jenis_kelamin'=> $validated['jenis_kelamin'],
+                'ttl'          => $validated['ttl'],
+                'umur'         => $validated['umur'],
+                'alamat'       => $validated['alamat'],
+                'no_hp'        => $validated['no_hp'],
             ]);
 
             DB::commit();
@@ -150,6 +153,7 @@ class LansiaController extends Controller
             'password'     => 'nullable|string|min:6', 
             'nama'         => 'required|string|max:255',
             'nik'          => 'required|digits:16|unique:lansia,nik,' . $id, 
+            'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
@@ -162,6 +166,7 @@ class LansiaController extends Controller
             'nik.required'         => 'NIK wajib diisi.',
             'nik.digits'           => 'NIK harus terdiri dari 16 angka.',
             'nik.unique'           => 'NIK sudah terdaftar.',
+            'jenis_kelamin.required'         => 'Jenis Kelamin wajib diisi.',
             'ttl.required'         => 'Tempat, Tanggal Lahir wajib diisi.',
             'umur.required'        => 'Umur wajib diisi.',
             'umur.integer'         => 'Umur harus berupa angka.',
@@ -185,6 +190,7 @@ class LansiaController extends Controller
             $lansia = Lansia::findOrFail($id);
             $lansia->nama = $validated['nama'];
             $lansia->nik = $validated['nik'];
+            $lansia->jenis_kelamin = $validated['jenis_kelamin'];
             $lansia->ttl = $validated['ttl'];
             $lansia->umur = $validated['umur'];
             $lansia->alamat = $validated['alamat'];

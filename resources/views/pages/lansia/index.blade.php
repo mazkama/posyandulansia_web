@@ -35,7 +35,8 @@
                                         <form action="{{ route('lansia.destroy', $lansia->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm mb-1">Hapus</button>
+                                            <button type="submit" class="btn btn-danger btn-sm mb-1" 
+                                                onclick="return confirm('Yakin ingin menghapus {{$lansia->nama}}?')">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>

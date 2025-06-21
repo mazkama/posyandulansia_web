@@ -32,7 +32,8 @@
                                         <form action="{{ route('kader.destroy', $kader->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm mb-1">Hapus</button>
+                                            <button type="submit" class="btn btn-danger btn-sm mb-1" 
+                                                onclick="return confirm('Yakin ingin menghapus {{$kader->nama}}?')">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>

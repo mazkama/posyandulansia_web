@@ -41,6 +41,7 @@ class KaderController extends Controller
             'password'     => 'required|string|min:6',
             'nama'         => 'required|string|max:255',
             'nik'          => 'required|digits:16|unique:kader,nik',
+            'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
@@ -56,13 +57,14 @@ class KaderController extends Controller
             ]);
 
             Kader::create([
-                'user_id' => $user->id,
-                'nama'    => $validated['nama'],
-                'nik'     => $validated['nik'],
-                'ttl'     => $validated['ttl'],
-                'umur'    => $validated['umur'],
-                'alamat'  => $validated['alamat'],
-                'no_hp'   => $validated['no_hp'],
+                'user_id'      => $user->id,
+                'nama'         => $validated['nama'],
+                'nik'          => $validated['nik'],
+                'jenis_kelamin'=> $validated['jenis_kelamin'],
+                'ttl'          => $validated['ttl'],
+                'umur'         => $validated['umur'],
+                'alamat'       => $validated['alamat'],
+                'no_hp'        => $validated['no_hp'],
             ]);
 
             DB::commit();
@@ -101,6 +103,7 @@ class KaderController extends Controller
             'password'     => 'nullable|string|min:6',
             'nama'         => 'required|string|max:255',
             'nik'          => 'required|digits:16|unique:kader,nik,' . $id,
+            'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
@@ -119,12 +122,13 @@ class KaderController extends Controller
             $user->save();
 
             $kader->update([
-                'nama'   => $validated['nama'],
-                'nik'    => $validated['nik'],
-                'ttl'    => $validated['ttl'],
-                'umur'   => $validated['umur'],
-                'alamat' => $validated['alamat'],
-                'no_hp'  => $validated['no_hp'],
+                'nama'         => $validated['nama'],
+                'nik'          => $validated['nik'],
+                'jenis_kelamin'=> $validated['jenis_kelamin'],
+                'ttl'          => $validated['ttl'],
+                'umur'         => $validated['umur'],
+                'alamat'       => $validated['alamat'],
+                'no_hp'        => $validated['no_hp'],
             ]);
 
             DB::commit();

@@ -10,7 +10,7 @@ class Lansia extends Model
 {
     use HasFactory;
     protected $table = 'lansia'; // Menentukan nama tabel yang benar
-    protected $fillable = ['user_id', 'nama', 'nik', 'ttl', 'umur', 'alamat', 'no_hp'];
+    protected $fillable = ['user_id', 'nama', 'nik','jenis_kelamin', 'ttl', 'umur', 'alamat', 'no_hp'];
 
     public function user()
     {

@@ -95,6 +95,20 @@
                                     @enderror
                                 </div>
                                 <div class="col-sm-6">
+                                    <label class="form-label d-block">Jenis Kelamin</label>
+                                    <div class="form-check form-check-inline mt-2">
+                                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_l" value="L" {{ old('jenis_kelamin') == 'L' ? 'checked' : '' }} required>
+                                        <label class="form-check-label" for="jenis_kelamin_l">Laki-laki</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_p" value="P" {{ old('jenis_kelamin') == 'P' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="jenis_kelamin_p">Perempuan</label>
+                                    </div>
+                                    @error('jenis_kelamin')
+                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-sm-6">
                                     <label for="no_hp" class="form-label">Nomor HP</label>
                                     <input type="text" class="form-control" id="no_hp" name="no_hp"
                                         placeholder="masukan nomor hp" value="{{ old('no_hp') }}"/>
