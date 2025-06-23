@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController as AdminAuthController;
 use App\Http\Controllers\CekKesehatanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KaderController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\LansiaController;
@@ -61,14 +62,18 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Logout POST
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+
+    // Profil
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
 });
 
 
     
 Route::middleware(['admin'])->group(function () {
+    
     // Resource routes
     Route::resource('/lansia', LansiaController::class)->names('lansia');
     Route::resource('/jadwal', JadwalController::class)->names('jadwal');
