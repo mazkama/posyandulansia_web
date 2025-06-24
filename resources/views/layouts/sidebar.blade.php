@@ -43,12 +43,12 @@
                 <div data-i18n="Jadwal">Jadwal</div>
             </a>
         </li>
-        <li class="menu-item {{ Request::is('kesehatan-cek*') ? 'active' : '' }}">
+        {{-- <li class="menu-item {{ Request::is('kesehatan-cek*') ? 'active' : '' }}">
             <a href="{{ route('cekKesehatan.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-layout-kanban"></i>
                 <div data-i18n="Cek Kesehatan">Cek Kesehatan</div>
             </a>
-        </li>
+        </li> --}}
         <li class="menu-item {{ Request::is('riwayat-kesehatan*') ? 'active' : '' }}">
             <a href="{{ route('riwayatKesehatan.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-clock"></i>
