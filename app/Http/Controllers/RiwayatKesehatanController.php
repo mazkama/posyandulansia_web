@@ -97,7 +97,7 @@ class RiwayatKesehatanController extends Controller
             ->get();
 
         // jika data kurang dari 10, hasil PDF akan blank (tidak render view)
-        if ($cekKesehatan->count() < 10) {
+        if ($cekKesehatan->count() == 0) {
             $dompdf = new Dompdf();
             $dompdf->loadHtml('');
             $dompdf->setPaper('A4', 'landscape');

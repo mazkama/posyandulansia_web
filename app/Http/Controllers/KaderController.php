@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kader;
 use App\Models\User;
+use App\Models\Desa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -31,7 +32,8 @@ class KaderController extends Controller
 
     public function create()
     {
-        return view('pages.kader.create');
+        $desas = Desa::all();
+        return view('pages.kader.create', compact('desas'));
     }
 
     public function store(Request $request)
@@ -39,13 +41,16 @@ class KaderController extends Controller
         $validated = $request->validate([
             'username'     => 'required|unique:users,username',
             'password'     => 'required|string|min:6',
-            'nama'         => 'required|string|max:255',
-            'nik'          => 'required|digits:16|unique:kader,nik',
+            'nama'         => 'required|string|max:255', 
             'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
             'no_hp'        => 'required|string',
+            'desa_id'      => 'required|exists:desas,id',
+        ], [
+            'desa_id.required' => 'Desa wajib dipilih.',
+            'desa_id.exists'   => 'Desa tidak valid.',
         ]);
 
         DB::beginTransaction();
@@ -58,8 +63,9 @@ class KaderController extends Controller
 
             Kader::create([
                 'user_id'      => $user->id,
+                'desa_id'      => $validated['desa_id'],
                 'nama'         => $validated['nama'],
-                'nik'          => $validated['nik'],
+                'nik'          => $validated['username'],
                 'jenis_kelamin'=> $validated['jenis_kelamin'],
                 'ttl'          => $validated['ttl'],
                 'umur'         => $validated['umur'],
@@ -93,37 +99,43 @@ class KaderController extends Controller
     {
         $kader = Kader::findOrFail($id);
         $user = User::findOrFail($kader->user_id);
-        return view('pages.kader.edit', compact('kader', 'user'));
+        $desas = Desa::all();
+        return view('pages.kader.edit', compact('kader', 'user', 'desas'));
     }
 
     public function update(Request $request, string $id)
     {
+        $kader = Kader::findOrFail($id);
+        $user = User::findOrFail($kader->user_id);
+
         $validated = $request->validate([
-            'username'     => 'required|unique:users,username,' . $id,
+            'username'     => 'required|unique:users,username,' . $user->id,
             'password'     => 'nullable|string|min:6',
-            'nama'         => 'required|string|max:255',
-            'nik'          => 'required|digits:16|unique:kader,nik,' . $id,
+            'nama'         => 'required|string|max:255', 
             'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
             'no_hp'        => 'required|string',
+            'desa_id'      => 'required|exists:desas,id',
+        ], [
+            'desa_id.required' => 'Desa wajib dipilih.',
+            'desa_id.exists'   => 'Desa tidak valid.',
         ]);
 
         DB::beginTransaction();
         try {
-            $kader = Kader::findOrFail($id);
-            $user = User::findOrFail($kader->user_id);
-
             $user->username = $validated['username'];
             if ($validated['password']) {
                 $user->password = Hash::make($validated['password']);
             }
             $user->save();
 
+            // Jangan update nik jika tidak ingin berubah
             $kader->update([
+                'desa_id'      => $validated['desa_id'],
                 'nama'         => $validated['nama'],
-                'nik'          => $validated['nik'],
+                'nik'       => $validated['username'], // HAPUS baris ini jika nik tidak boleh berubah
                 'jenis_kelamin'=> $validated['jenis_kelamin'],
                 'ttl'          => $validated['ttl'],
                 'umur'         => $validated['umur'],
@@ -133,15 +145,15 @@ class KaderController extends Controller
 
             DB::commit();
 
-            // update Firebase jika diperlukan
-            if ($validated['username'] != $user->username || (isset($validated['password']) && $validated['password'])) {
-                $this->firebaseAuth->updateUser($user->firebase_uid, [
-                    'email'       => 'qilaynin+' . $validated['username'] . '@gmail.com',
-                    'password'    => $validated['password'] ?? $user->password,
-                    'displayName' => $validated['nama'],
-                    'disabled'    => false,
-                ]);
-            }
+            // // update Firebase jika diperlukan
+            // if ($validated['username'] != $user->username || (isset($validated['password']) && $validated['password'])) {
+            //     $this->firebaseAuth->updateUser($user->firebase_uid, [
+            //         'email'       => 'qilaynin+' . $validated['username'] . '@gmail.com',
+            //         'password'    => $validated['password'] ?? $user->password,
+            //         'displayName' => $validated['nama'],
+            //         'disabled'    => false,
+            //     ]);
+            // }
 
             return redirect()->route('kader.index')->with('success', 'Data kader berhasil diperbarui.');
         } catch (\Exception $e) {

@@ -39,7 +39,7 @@
                             </div>
                             <div class="row g-6">
                                 <div class="col-sm-6">
-                                    <label class="form-label" for="username">Username</label>
+                                    <label class="form-label" for="username">NIK</label>
                                     <input type="text" id="username" name="username" class="form-control"
                                         value="{{ old('username', $kader->user->username) }}" required />
                                     @error('username')
@@ -85,14 +85,14 @@
                                         <div class="text-danger mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <div class="col-sm-6">
+                                {{-- <div class="col-sm-6">
                                     <label for="nik" class="form-label">NIK</label>
                                     <input class="form-control" type="number" id="nik" name="nik"
                                         value="{{ old('nik', $kader->nik) }}" required />
                                     @error('nik')
                                         <div class="text-danger mt-1">{{ $message }}</div>
                                     @enderror
-                                </div>
+                                </div> --}}
                                 <div class="col-sm-6">
                                     <label class="form-label d-block">Jenis Kelamin</label>
                                     <div class="form-check form-check-inline mt-2">
@@ -130,6 +130,18 @@
                                     <input class="form-control" type="number" id="umur" name="umur"
                                         value="{{ old('umur', $kader->umur) }}" required />
                                     @error('umur')
+                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="desa_id" class="form-label">Desa</label>
+                                    <select class="form-control" id="desa_id" name="desa_id" required>
+                                        <option value="">Pilih Desa</option>
+                                        @foreach($desas as $desa)
+                                            <option value="{{ $desa->id }}" {{ old('desa_id') == $desa->id ? 'selected' : '' }}>{{ $desa->nama_desa }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('desa_id')
                                         <div class="text-danger mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>

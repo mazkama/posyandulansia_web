@@ -25,6 +25,7 @@
                                 <th>No</th>
                                 <th>Tanggal</th>
                                 <th>Lokasi</th>
+                                <th>Desa</th>
                                 <th>Status</th>
                                 <th>Aksi</th>
                             </tr>
@@ -35,6 +36,7 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $jadwal->tanggal }}</td>
                                     <td>{{ $jadwal->lokasi }}</td>
+                                    <td>{{ $jadwal->desa ? $jadwal->desa->nama_desa : '-' }}</td>
                                     <td>
                                         @if ($jadwal->status === 'belum_dimulai')
                                             <span class="badge bg-warning">Belum Dimulai</span>

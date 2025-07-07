@@ -16,6 +16,7 @@
                                 <th>Nama Lengkap</th>
                                 <th>NIK</th>
                                 <th>Tempat Tanggal Lahir</th>
+                                <th>Desa</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -26,6 +27,7 @@
                                     <td>{{ $kader->nama }}</td>
                                     <td>{{ $kader->nik }}</td>
                                     <td>{{ $kader->ttl }}</td>
+                                    <td>{{ $kader->desa ? $kader->desa->nama_desa : '-' }}</td>
                                     <td>
                                         <a href="{{ route('kader.show', $kader->id) }}" class="btn btn-info btn-sm mb-1">Show</a>
                                         <a href="{{ route('kader.edit', $kader->id) }}" class="btn btn-warning btn-sm mb-1">Edit</a>

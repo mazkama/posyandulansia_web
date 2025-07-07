@@ -123,6 +123,7 @@
                                 <th>NIK</th>
                                 <th>Nama Lengkap</th>
                                 <th>Tanggal</th>
+                                <th>Diagnosa</th> 
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -133,6 +134,26 @@
                                     <td>{{ $riwayat->lansia->nik }}</td>
                                     <td>{{ $riwayat->lansia->nama }}</td>
                                     <td>{{ $riwayat->tanggal }}</td>
+                                    <td>
+                                        @php
+                                            $diagnosa = $riwayat->diagnosa ?? [];
+                                        @endphp
+                                        @if (empty($diagnosa))
+                                            <span class="badge bg-success">Normal</span>
+                                        @else
+                                            @foreach ($diagnosa as $d)
+                                                @php
+                                                    // Pilih warna badge sesuai diagnosa
+                                                    $badge = 'bg-secondary';
+                                                    if (stripos($d, 'hipertensi') !== false) $badge = 'bg-danger';
+                                                    elseif (stripos($d, 'diabetes') !== false) $badge = 'bg-warning';
+                                                    elseif (stripos($d, 'kolesterol') !== false) $badge = 'bg-info';
+                                                    elseif (stripos($d, 'asam urat') !== false) $badge = 'bg-primary';
+                                                @endphp
+                                                <span class="badge {{ $badge }} mb-1">{{ $d }}</span>
+                                            @endforeach
+                                        @endif
+                                    </td>
                                     <td>
                                         <button class="btn btn-warning btn-sm show-btn" data-id="{{ $riwayat->id }}"
                                             data-bs-toggle="modal" data-bs-target="#showModal">

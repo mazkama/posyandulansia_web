@@ -18,15 +18,21 @@ class LansiaController extends Controller
             'data' => $lansia
         ], 200);
     }
-
+ 
     public function searchLansia(Request $request)
     {
         $query = Lansia::query();
 
         if ($request->has('keyword')) {
             $keyword = $request->input('keyword');
-            $query->where('nama', 'like', "%$keyword%")
-                  ->orWhere('nik', 'like', "%$keyword%");
+            $query->where(function($q) use ($keyword) {
+                $q->where('nama', 'like', "%$keyword%")
+                ->orWhere('nik', 'like', "%$keyword%");
+            });
+        }
+
+        if ($request->has('desa_id')) {
+            $query->where('desa_id', $request->input('desa_id'));
         }
 
         $lansia = $query->paginate(10);

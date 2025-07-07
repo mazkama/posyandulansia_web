@@ -22,6 +22,15 @@
                         <input type="text" class="form-control" id="create_lokasi" name="lokasi"
                             placeholder="Masukkan lokasi" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="create_desa_id" class="form-label">Desa</label>
+                        <select class="form-control" id="create_desa_id" name="desa_id" required>
+                            <option value="">Pilih Desa</option>
+                            @foreach(\App\Models\Desa::all() as $desa)
+                                <option value="{{ $desa->id }}">{{ $desa->nama_desa }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -57,6 +66,15 @@
                         <input type="text" class="form-control" id="edit_lokasi" name="lokasi"
                             placeholder="Masukkan lokasi" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="edit_desa_id" class="form-label">Desa</label>
+                        <select class="form-control" id="edit_desa_id" name="desa_id" required>
+                            <option value="">Pilih Desa</option>
+                            @foreach(\App\Models\Desa::all() as $desa)
+                                <option value="{{ $desa->id }}">{{ $desa->nama_desa }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -74,4 +92,23 @@
         document.getElementById("edit_tanggal").setAttribute("min", today);
     });
 
+    $('.edit-btn').on('click', function() {
+        var id = $(this).data('id');
+        $.ajax({
+            url: '/jadwal/' + id + '/edit',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#edit_tanggal').val(data.tanggal);
+                $('#edit_waktu').val(data.waktu);
+                $('#edit_lokasi').val(data.lokasi);
+                $('#edit_keterangan').val(data.keterangan);
+                $('#edit_desa_id').val(data.desa_id); // set desa
+                $('#editForm').attr('action', '/jadwal/' + id);
+            },
+            error: function(xhr) {
+                alert('Terjadi kesalahan saat mengambil data jadwal.');
+            }
+        });
+    });
 </script>

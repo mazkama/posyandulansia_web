@@ -9,7 +9,10 @@ class CekKesehatan extends Model
 {
     use HasFactory;protected $table = 'cek_kesehatan'; // Menentukan nama tabel yang benar
     protected $fillable = ['lansia_id', 'jadwal_id', 'tanggal', 'berat_badan', 'tekanan_darah_sistolik', 'tekanan_darah_diastolik','gula_darah','kolestrol','asam_urat', 'diagnosa'];
-
+    protected $casts = [
+        'diagnosa' => 'array',
+    ];
+    
     public function lansia()
     {
         return $this->belongsTo(Lansia::class, 'lansia_id');

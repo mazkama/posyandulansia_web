@@ -16,6 +16,7 @@
                                 <th>Nama Lengkap</th>
                                 <th>NIK</th>
                                 <th>Tempat Tanggal Lahir</th>
+                                <th>Desa</th>
                                 {{-- <th>Umur</th>
                             <th>Alamat</th>
                             <th>No HP</th> --}}
@@ -29,6 +30,7 @@
                                     <td>{{ $lansia->nama }}</td>
                                     <td>{{ $lansia->nik }}</td>
                                     <td>{{ $lansia->ttl }}</td>
+                                    <td>{{ $lansia->desa ? $lansia->desa->nama_desa : '-' }}</td>
                                     <td>
                                         <a href="{{ route('lansia.show', $lansia->id) }}" class="btn btn-info btn-sm mb-1">Show</a>
                                         <a href="{{ route('lansia.edit', $lansia->id) }}" class="btn btn-warning btn-sm mb-1">Edit</a>
@@ -56,6 +58,4 @@
             });
         });
     </script>
-
-
 @endsection

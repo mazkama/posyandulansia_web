@@ -8,9 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Jadwal extends Model
 {
     use HasFactory;
-    protected $table = 'jadwal'; // Menentukan nama tabel yang benar
-    protected $fillable = ['tanggal', 'waktu', 'lokasi', 'status'];
+    protected $table = 'jadwal';
+    protected $fillable = ['tanggal', 'waktu', 'lokasi', 'status', 'desa_id'];
 
+    public function desa()
+    {
+        return $this->belongsTo(Desa::class, 'desa_id');
+    }
+    
     public function kehadiran()
     {
         return $this->hasMany(Kehadiran::class, 'jadwal_id');

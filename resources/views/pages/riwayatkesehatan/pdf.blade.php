@@ -85,6 +85,10 @@
             padding: 3px 8px;
             font-weight: bold;
         }
+
+        .highlight {
+            background-color: #fff59d;
+        }
     </style>
 </head>
 
@@ -151,7 +155,12 @@
             <tbody>
                 @php $no = 1; @endphp
                 @foreach ($cekKesehatan as $data)
-                    <tr>
+                    @php
+                        $diagnosa = $data->diagnosa ?? [];
+                        $isNormal = empty($diagnosa);
+                        $diagnosaText = $isNormal ? 'Normal' : (is_array($diagnosa) ? implode(', ', $diagnosa) : $diagnosa);
+                    @endphp
+                    <tr class="{{ $isNormal ? '' : 'highlight' }}">
                         <td style="text-align:center;">{{ $no++ }}</td>
                         <td>{{ $data->lansia->nama }}</td>
                         <td style="text-align:center;">{{ $data->berat_badan }}</td>
@@ -160,7 +169,7 @@
                         <td style="text-align:center;">{{ $data->gula_darah }}</td>
                         <td style="text-align:center;">{{ $data->kolestrol }}</td>
                         <td style="text-align:center;">{{ $data->asam_urat }}</td>
-                        <td>{{ $data->diagnosa }}</td>
+                        <td>{{ $diagnosaText }}</td>
                     </tr>
                 @endforeach
             </tbody>

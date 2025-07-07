@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jadwal;
 use App\Models\CekKesehatan;
+use App\Models\Desa; // Tambahkan ini di bagian use
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
@@ -17,7 +18,7 @@ class JadwalController extends Controller
 
     public function index()
     {
-        $jadwals = Jadwal::orderBy('tanggal', 'desc')->get();
+        $jadwals = Jadwal::with('desa')->orderBy('tanggal', 'desc')->get(); // eager load desa
         $now = Carbon::now();
 
         foreach ($jadwals as $jadwal) {
@@ -44,7 +45,8 @@ class JadwalController extends Controller
      */
     public function create()
     {
-        //
+        $desas = Desa::all();
+        return view('pages.jadwal.create', compact('desas'));
     }
 
     /**
@@ -56,6 +58,7 @@ class JadwalController extends Controller
             'tanggal'    => 'required|date',
             'waktu'      => 'required|date_format:H:i',
             'lokasi'     => 'required|string|max:255',
+            'desa_id'    => 'required|exists:desas,id',
         ], [
             'tanggal.required'   => 'Tanggal wajib diisi.',
             'tanggal.date'       => 'Format tanggal tidak valid.',
@@ -63,6 +66,8 @@ class JadwalController extends Controller
             'waktu.date_format'  => 'Format waktu tidak valid, gunakan format HH:MM.',
             'lokasi.required'    => 'Lokasi wajib diisi.',
             'lokasi.max'         => 'Lokasi maksimal 255 karakter.',
+            'desa_id.required' => 'Desa wajib dipilih.',
+            'desa_id.exists'   => 'Desa tidak valid.',
         ]);
 
         // Konversi tanggal ke format hari
@@ -94,19 +99,19 @@ class JadwalController extends Controller
             'waktu'   => $validated['waktu'],
             'lokasi'  => $validated['lokasi'],
             'status'  => $status,
+            'desa_id' => $validated['desa_id'],
         ]);
 
         // Kirim notifikasi dengan pesan 
         app()->call('App\Http\Controllers\NotifikasiController@store', [
             'request' => new Request([
-                'pesan' => $pesan
+                'pesan' => $pesan,
+                'desa_id' => (string) $validated['desa_id'], 
             ])
         ]);
 
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil dibuat.');
     }
-
-
 
     /**
      * Display the specified resource.
@@ -122,6 +127,7 @@ class JadwalController extends Controller
     public function edit($id)
     {
         $jadwal = Jadwal::findOrFail($id);
+        $desas = Desa::all();
 
         // Jika permintaan adalah AJAX, kembalikan data JSON
         if (request()->ajax()) {
@@ -129,9 +135,8 @@ class JadwalController extends Controller
         }
 
         // Atau, jika menggunakan halaman edit terpisah
-        return view('jadwal.edit', compact('jadwal'));
+        return view('jadwal.edit', compact('jadwal', 'desas'));
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -142,6 +147,7 @@ class JadwalController extends Controller
             'tanggal'    => 'required|date',
             'waktu'      => 'required|date_format:H:i',
             'lokasi'     => 'required|string|max:255',
+            'desa_id'    => 'required|exists:desas,id',
         ], [
             'tanggal.required'   => 'Tanggal wajib diisi.',
             'tanggal.date'       => 'Format tanggal tidak valid.',
@@ -149,6 +155,8 @@ class JadwalController extends Controller
             'waktu.date_format'  => 'Format waktu tidak valid, gunakan format HH:MM.',
             'lokasi.required'    => 'Lokasi wajib diisi.',
             'lokasi.max'         => 'Lokasi maksimal 255 karakter.',
+            'desa_id.required' => 'Desa wajib dipilih.',
+            'desa_id.exists'   => 'Desa tidak valid.',
         ]);
 
         // Ambil data jadwal lama
@@ -171,7 +179,20 @@ class JadwalController extends Controller
 
         $jadwal->save();
 
-        // Redirect dengan pesan sukses**
+        // Kirim notifikasi setelah update jadwal
+        $hari = Carbon::parse($validated['tanggal'])->translatedFormat('l');
+        $tanggal = Carbon::parse($validated['tanggal'])->translatedFormat('j F Y');
+        $pesan = "Perubahan jadwal: Posyandu lansia akan dilaksanakan {$hari}, {$tanggal} pukul {$validated['waktu']} di {$validated['lokasi']}. Mohon diperhatikan perubahan jadwal ini.";
+
+        // Trigger notifikasi dan FCM ke desa terkait
+        app()->call('App\Http\Controllers\NotifikasiController@store', [
+            'request' => new \Illuminate\Http\Request([
+                'pesan' => $pesan,
+                'desa_id' => (string) $validated['desa_id'],
+            ])
+        ]);
+
+        // Redirect dengan pesan sukses
         return redirect()->route('jadwal.index')->with('success', 'Jadwal berhasil diperbarui.');
     }
 

@@ -45,6 +45,10 @@ class JadwalController extends Controller
         if ($request->has('lokasi')) {
             $query->where('lokasi', 'like', '%' . $request->lokasi . '%');
         }
+
+        if ($request->has('desa_id')) {
+            $query->where('desa_id', $request->input('desa_id'));
+        }
  
         $jadwals = $query->orderBy('tanggal', 'desc')
                          ->paginate(10);

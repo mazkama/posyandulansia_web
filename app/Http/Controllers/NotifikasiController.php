@@ -39,15 +39,18 @@ class NotifikasiController extends Controller
         // Validasi input
         $request->validate([
             'pesan' => 'required|string',
+            'desa_id' => 'required|exists:desas,id', 
         ]);
 
         // Simpan ke database dengan tanggal otomatis
         $notifikasi = Notifikasi::create([
             'pesan' => $request->pesan,
             'tanggal_kirim' => Carbon::now(),
+            'desa_id' => $request->desa_id, // Simpan ID desa
         ]);
 
-        $this->sendNotificationToTopic('Jadwal Posyandu Lansia', $notifikasi['pesan']);
+        // Kirim ke topic desa
+        $this->sendNotificationToTopic('Jadwal Posyandu Lansia', $notifikasi['pesan'], [], 1, $request->desa_id);
 
         return response()->json([
             'success' => true,
@@ -65,7 +68,7 @@ class NotifikasiController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function sendNotificationToTopic($title, $body, $data = [], $attempt = 1)
+    public function sendNotificationToTopic($title, $body, $data = [], $attempt = 1, $topic = 'default')
     {
         $maxAttempts = 3; // Maksimal percobaan
         try {
@@ -74,7 +77,7 @@ class NotifikasiController extends Controller
                 'body' => $body,
             ];
 
-            $message = CloudMessage::withTarget('topic', 'PosyanduLansia')
+            $message = CloudMessage::withTarget('topic', $topic)
                 ->withNotification($notification)
                 ->withData($data);
 
@@ -83,7 +86,7 @@ class NotifikasiController extends Controller
         } catch (\Throwable $e) {
             if ($attempt < $maxAttempts) {
                 sleep(2); // Tunggu 2 detik sebelum mencoba ulang
-                return $this->sendNotificationToTopic($title, $body, $data, $attempt + 1);
+                return $this->sendNotificationToTopic($title, $body, $data, $attempt + 1, $topic);
             }
             return false;
         }

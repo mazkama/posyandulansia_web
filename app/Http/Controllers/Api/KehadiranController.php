@@ -37,37 +37,46 @@ class KehadiranController extends Controller
     //     ]);
     // }
 
-    public function getLansiaByJadwal(Request $request, $jadwal_id)
+    public function getLansiaByJadwal(c $jadwal_id)
     {
+        // Ambil desa_id dari jadwal
+        $jadwal = \App\Models\Jadwal::findOrFail($jadwal_id);
+        $desaId = $jadwal->desa_id;
+
         $query = Kehadiran::with([
-            'lansia' => function ($query) use ($jadwal_id) {
+            'lansia' => function ($query) use ($jadwal_id, $desaId) {
                 $query
+                    ->where('desa_id', $desaId) // Filter lansia sesuai desa_id jadwal
                     ->whereHas('cekKesehatan', function ($q) use ($jadwal_id) {
                         $q->where('jadwal_id', $jadwal_id);
                     })
                     ->with([
                         'cekKesehatan' => function ($q) use ($jadwal_id) {
-                            $q->where('jadwal_id', $jadwal_id)->orderBy('created_at', 'desc'); // Urutkan cekKesehatan-nya
+                            $q->where('jadwal_id', $jadwal_id)->orderBy('created_at', 'desc');
                         },
                     ]);
             },
         ])
             ->where('jadwal_id', $jadwal_id)
-            ->whereHas('lansia', function ($q) use ($request, $jadwal_id) {
+            ->whereHas('lansia', function ($q) use ($request, $jadwal_id, $desaId) {
+                $q->where('desa_id', $desaId); // Filter lansia sesuai desa_id jadwal
                 if ($request->has('keyword')) {
                     $keyword = $request->input('keyword');
                     $q->where(function ($q) use ($keyword) {
                         $q->where('nama', 'like', "%$keyword%")->orWhere('nik', 'like', "%$keyword%");
                     });
                 }
-
-                // pastikan lansia hanya yang punya cekKesehatan di jadwal ini
                 $q->whereHas('cekKesehatan', function ($q2) use ($jadwal_id) {
                     $q2->where('jadwal_id', $jadwal_id);
                 });
             })
-            // Tambahkan subquery untuk order berdasarkan cek_kesehatan terbaru
-            ->orderByDesc(DB::table('cek_kesehatan')->select('created_at')->whereColumn('cek_kesehatan.lansia_id', 'kehadiran.lansia_id')->where('jadwal_id', $jadwal_id)->orderByDesc('created_at')->limit(1));
+            ->orderByDesc(DB::table('cek_kesehatan')
+                ->select('created_at')
+                ->whereColumn('cek_kesehatan.lansia_id', 'kehadiran.lansia_id')
+                ->where('jadwal_id', $jadwal_id)
+                ->orderByDesc('created_at')
+                ->limit(1)
+            );
 
         $data = $query->paginate(10);
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lansia;
 use App\Models\User;
+use App\Models\Desa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -38,7 +39,8 @@ class LansiaController extends Controller
      */
     public function create()
     {
-        return view('pages.lansia.create');
+        $desas = Desa::all();
+        return view('pages.lansia.create', compact('desas'));
     }
 
     /**
@@ -53,12 +55,12 @@ class LansiaController extends Controller
             'password'     => 'required|string|min:6',
             // Data biodata lansia
             'nama'         => 'required|string|max:255',
-            'nik'          => 'required|digits:16|unique:lansia,nik',
             'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
             'no_hp'        => 'required|string',
+            'desa_id'      => 'required|exists:desas,id',
         ], [
             // Pesan kesalahan kustom
             'username.required'    => 'Username wajib diisi.',
@@ -66,9 +68,6 @@ class LansiaController extends Controller
             'password.required'    => 'Password wajib diisi.',
             'password.min'         => 'Password minimal harus 6 karakter.',
             'nama.required'        => 'Nama wajib diisi.',
-            'nik.required'         => 'NIK wajib diisi.',
-            'nik.digits'           => 'NIK harus terdiri dari 16 angka.',
-            'nik.unique'           => 'NIK sudah terdaftar.',
             'jenis_kelamin.required'         => 'Jenis Kelamin wajib diisi.',
             'ttl.required'         => 'Tempat, Tanggal Lahir wajib diisi.',
             'umur.required'        => 'Umur wajib diisi.',
@@ -77,6 +76,8 @@ class LansiaController extends Controller
             'umur.max'             => 'Umur maksimal adalah 150 tahun.',
             'alamat.required'      => 'Alamat wajib diisi.',
             'no_hp.required'       => 'Nomor HP wajib diisi.',
+            'desa_id.required'     => 'Desa wajib dipilih.',
+            'desa_id.exists'       => 'Desa tidak valid.',
         ]);
 
 
@@ -93,8 +94,9 @@ class LansiaController extends Controller
             // Simpan data biodata lansia
             Lansia::create([
                 'user_id'      => $user->id,
+                'desa_id'      => $validated['desa_id'],
                 'nama'         => $validated['nama'],
-                'nik'          => $validated['nik'],
+                'nik'          => $validated['username'],
                 'jenis_kelamin'=> $validated['jenis_kelamin'],
                 'ttl'          => $validated['ttl'],
                 'umur'         => $validated['umur'],
@@ -139,8 +141,8 @@ class LansiaController extends Controller
     {
         $lansia = Lansia::findOrFail($id);
         $user = User::findOrFail($lansia->user_id); 
-        
-        return view('pages.lansia.edit', compact('lansia', 'user'));
+        $desas = Desa::all();
+        return view('pages.lansia.edit', compact('lansia', 'user', 'desas'));
     }
 
     /**
@@ -151,21 +153,18 @@ class LansiaController extends Controller
         $validated = $request->validate([
             'username'     => 'required|unique:users,username,' . $id, 
             'password'     => 'nullable|string|min:6', 
-            'nama'         => 'required|string|max:255',
-            'nik'          => 'required|digits:16|unique:lansia,nik,' . $id, 
+            'nama'         => 'required|string|max:255', 
             'jenis_kelamin'=> 'required|in:L,P',
             'ttl'          => 'required|string|max:255',
             'umur'         => 'required|integer|min:1|max:150',
             'alamat'       => 'required|string',
             'no_hp'        => 'required|string',
+            'desa_id'      => 'required|exists:desas,id',
         ], [
             'username.required'    => 'Username wajib diisi.',
             'username.unique'      => 'Username sudah digunakan, silakan pilih yang lain.',
             'password.min'         => 'Password minimal harus 6 karakter.',
-            'nama.required'        => 'Nama wajib diisi.',
-            'nik.required'         => 'NIK wajib diisi.',
-            'nik.digits'           => 'NIK harus terdiri dari 16 angka.',
-            'nik.unique'           => 'NIK sudah terdaftar.',
+            'nama.required'        => 'Nama wajib diisi.', 
             'jenis_kelamin.required'         => 'Jenis Kelamin wajib diisi.',
             'ttl.required'         => 'Tempat, Tanggal Lahir wajib diisi.',
             'umur.required'        => 'Umur wajib diisi.',
@@ -174,6 +173,8 @@ class LansiaController extends Controller
             'umur.max'             => 'Umur maksimal adalah 150 tahun.',
             'alamat.required'      => 'Alamat wajib diisi.',
             'no_hp.required'       => 'Nomor HP wajib diisi.',
+            'desa_id.required'     => 'Desa wajib dipilih.',
+            'desa_id.exists'       => 'Desa tidak valid.',
         ]);
 
         DB::beginTransaction();
@@ -189,24 +190,25 @@ class LansiaController extends Controller
 
             $lansia = Lansia::findOrFail($id);
             $lansia->nama = $validated['nama'];
-            $lansia->nik = $validated['nik'];
+            $lansia->nik = $validated['username'];
             $lansia->jenis_kelamin = $validated['jenis_kelamin'];
             $lansia->ttl = $validated['ttl'];
             $lansia->umur = $validated['umur'];
             $lansia->alamat = $validated['alamat'];
             $lansia->no_hp = $validated['no_hp'];
+            $lansia->desa_id = $validated['desa_id'];
             $lansia->save();
 
             DB::commit();
 
-            if ($validated['username'] != $user->username || (isset($validated['password']) && $validated['password'])) {
-                $this->firebaseAuth->updateUser($user->firebase_uid, [
-                    'email' => 'qilaynin+' . $validated['username'] . '@gmail.com',
-                    'password' => $validated['password'] ?? $user->password,
-                    'displayName' => $validated['nama'],
-                    'disabled' => false,
-                ]);
-            }
+            // if ($validated['username'] != $user->username || (isset($validated['password']) && $validated['password'])) {
+            //     $this->firebaseAuth->updateUser($user->firebase_uid, [
+            //         'email' => 'qilaynin+' . $validated['username'] . '@gmail.com',
+            //         'password' => $validated['password'] ?? $user->password,
+            //         'displayName' => $validated['nama'],
+            //         'disabled' => false,
+            //     ]);
+            // }
 
             return redirect()->route('lansia.index')->with('success', 'Data lansia berhasil diperbarui.');
         } catch (\Exception $e) {

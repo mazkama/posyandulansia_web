@@ -12,6 +12,12 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        \Log::info('Login attempt', [
+            'username' => $request->username,
+            'password' => $request->password,
+            'ip' => $request->ip(),
+            'time' => now()->toDateTimeString()
+        ]);
         $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -25,17 +31,20 @@ class AuthController extends Controller
             // Buat token untuk pengguna
             $token = $user->createToken('MyApp')->plainTextToken;
             
-            $role = $user->role;
-            
-            if ($role == 'kader'){
-                $dataUser = User::with('kader')->where('username', $request->username)->first();
-            }elseif ($role == 'lansia') {
-                $dataUser = User::with('lansia')->where('username', $request->username)->first();
+            $role = $user->role; 
+
+            if ($role == 'kader') {
+                $dataUser = User::with('kader.desa')->where('username', $request->username)->first();
+                $desa = $dataUser->kader ? $dataUser->kader->desa->nama_desa : null;
+            } elseif ($role == 'lansia') {
+                $dataUser = User::with('lansia.desa')->where('username', $request->username)->first();
+                $desa = $dataUser->lansia ? $dataUser->lansia->desa->nama_desa : null;
             }
 
             // Kembalikan response dengan token dan data pengguna
             return response()->json([
                 'access_token' => $token,
+                'desa' => $desa,
                 'user' => $dataUser
             ], 200);
         }
