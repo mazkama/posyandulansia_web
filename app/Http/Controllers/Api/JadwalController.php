@@ -10,10 +10,17 @@ use Illuminate\Http\Request;
 
 class JadwalController extends Controller
 {
-    public function cekJadwal()
+    public function cekJadwal(Request $request)
     {
         $today = Carbon::today()->toDateString();
-        $jadwal = Jadwal::whereDate('tanggal', $today)->get();
+
+        $query = Jadwal::whereDate('tanggal', $today);
+
+        if ($request->has('desa_id')) {
+            $query->where('desa_id', $request->desa_id);
+        }
+
+        $jadwal = $query->get();
 
         if ($jadwal->isEmpty()) {
             return response()->json([

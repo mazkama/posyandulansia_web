@@ -37,6 +37,7 @@ Route::get('cekJadwal', [JadwalController::class, 'cekJadwal']);
 Route::get('jadwal', [JadwalController::class, 'index']);
 
 //Route Kehadiran
+Route::get('lansia-by-jadwal-desa/{jadwal_id}/{desa_id}',[KehadiranController::class, 'lansiaByJadwalAndDesa']);
 Route::get('/kehadiran/jadwal/{jadwal_id}', [KehadiranController::class, 'getLansiaByJadwal']);
 
 //Route Lansia

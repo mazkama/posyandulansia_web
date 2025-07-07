@@ -36,54 +36,66 @@ class KehadiranController extends Controller
     //         'data' => $data
     //     ]);
     // }
+ 
+    public function getLansiaByJadwal(Request $request, $jadwal_id)
+{
+    $query = \App\Models\CekKesehatan::with('lansia') // relasi lansia harus didefinisikan di model CekKesehatan
+        ->where('jadwal_id', $jadwal_id)
+        ->orderBy('created_at', 'desc');
 
-    public function getLansiaByJadwal(c $jadwal_id)
+    if ($request->has('keyword')) {
+        $keyword = $request->input('keyword');
+        $query->whereHas('lansia', function ($q) use ($keyword) {
+            $q->where('nama', 'like', "%$keyword%")
+              ->orWhere('nik', 'like', "%$keyword%");
+        });
+    }
+
+    $data = $query->paginate(10);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Data kehadiran berhasil diambil',
+        'data' => $data,
+    ]);
+}
+
+    
+    public function lansiaByJadwalAndDesa(Request $request, $jadwal_id, $desa_id)
     {
-        // Ambil desa_id dari jadwal
-        $jadwal = \App\Models\Jadwal::findOrFail($jadwal_id);
-        $desaId = $jadwal->desa_id;
+        // 1. Jumlah lansia pada desa tersebut
+        $totalLansia = \App\Models\Lansia::where('desa_id', $desa_id)->count();
 
-        $query = Kehadiran::with([
-            'lansia' => function ($query) use ($jadwal_id, $desaId) {
-                $query
-                    ->where('desa_id', $desaId) // Filter lansia sesuai desa_id jadwal
-                    ->whereHas('cekKesehatan', function ($q) use ($jadwal_id) {
-                        $q->where('jadwal_id', $jadwal_id);
-                    })
-                    ->with([
-                        'cekKesehatan' => function ($q) use ($jadwal_id) {
-                            $q->where('jadwal_id', $jadwal_id)->orderBy('created_at', 'desc');
-                        },
-                    ]);
-            },
-        ])
-            ->where('jadwal_id', $jadwal_id)
-            ->whereHas('lansia', function ($q) use ($request, $jadwal_id, $desaId) {
-                $q->where('desa_id', $desaId); // Filter lansia sesuai desa_id jadwal
-                if ($request->has('keyword')) {
-                    $keyword = $request->input('keyword');
-                    $q->where(function ($q) use ($keyword) {
-                        $q->where('nama', 'like', "%$keyword%")->orWhere('nik', 'like', "%$keyword%");
-                    });
-                }
-                $q->whereHas('cekKesehatan', function ($q2) use ($jadwal_id) {
-                    $q2->where('jadwal_id', $jadwal_id);
-                });
+        // 2. Jumlah lansia yang sudah cek kesehatan pada jadwal tersebut
+        $lansiaCekKesehatan = \App\Models\CekKesehatan::where('jadwal_id', $jadwal_id)
+            ->whereHas('lansia', function($q) use ($desa_id) {
+                $q->where('desa_id', $desa_id);
             })
-            ->orderByDesc(DB::table('cek_kesehatan')
-                ->select('created_at')
-                ->whereColumn('cek_kesehatan.lansia_id', 'kehadiran.lansia_id')
-                ->where('jadwal_id', $jadwal_id)
-                ->orderByDesc('created_at')
-                ->limit(1)
-            );
+            ->distinct('lansia_id')
+            ->count('lansia_id');
 
-        $data = $query->paginate(10);
+        // 3. Data lansia pada desa_id yang BELUM cek kesehatan pada jadwal_id, pencarian keyword, pagination 10
+        $query = \App\Models\Lansia::where('desa_id', $desa_id)
+            ->whereDoesntHave('cekKesehatan', function($q) use ($jadwal_id) {
+                $q->where('jadwal_id', $jadwal_id);
+            });
+
+        if ($request->has('keyword')) {
+            $keyword = $request->input('keyword');
+            $query->where(function($q) use ($keyword) {
+                $q->where('nama', 'like', "%$keyword%")
+                  ->orWhere('nik', 'like', "%$keyword%");
+            });
+        }
+
+        $lansia = $query->paginate(10);
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Data lansia yang sudah cek kesehatan berhasil diambil',
-            'data' => $data,
+            'message' => 'Data lansia yang belum cek kesehatan pada jadwal dan desa',
+            'total_lansia' => $totalLansia,
+            'total_lansia_cek_kesehatan' => $lansiaCekKesehatan,
+            'data' => $lansia
         ]);
     }
 }

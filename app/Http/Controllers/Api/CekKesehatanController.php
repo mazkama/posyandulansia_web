@@ -532,7 +532,8 @@ class CekKesehatanController extends Controller
                 'gula_darah' => $gula_darah,
                 'kolestrol' => $kolestrol,
                 'asam_urat' => $asam_urat,
-                'diagnosa' => json_encode($diagnosa),
+                // 'diagnosa' => json_encode($diagnosa),
+                'diagnosa' => $diagnosa,
             ]);
             $cekKesehatan->save();
 
